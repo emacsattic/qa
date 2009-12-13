@@ -1,0 +1,13 @@
+Test Case    Spec Ref: \spec-item-ref,intdotint,unreachable
+Database      Seq Num: \subseq-num,unreachable
+              History: \np,unreachable/\nr,unreachable
+
+Properties:
+\props,plist,unreachable
+
+Test Action:
+\action
+
+Expected Result:
+\expected-result
+

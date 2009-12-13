@@ -1,0 +1,2 @@
+@set YYYYMMDD 2005-10-03
+@set VERSION 0.9

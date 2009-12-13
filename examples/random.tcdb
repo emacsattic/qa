@@ -1,0 +1,15 @@
+;; Database file written by EDB; format 0.6
+
+[cl-struct-database "Test Cases for /home/ttn/build/qa/examples/random.spec" nil 3 "/home/ttn/build/qa/examples/random.tcdb" nil nil nil nil nil 8 [spec-item-ref subseq-num action expected-result nr np actual-result props] ((spec-item-ref . 0) (subseq-num . 1) (action . 2) (expected-result . 3) (nr . 4) (np . 5) (actual-result . 6) (props . 7)) [intdotint integer string string integer integer string plist] (((0) (1) (2) (3) (4) (5) (6) (7))) nil t [cl-struct-sepinfo nil nil nil "
+" nil nil nil nil nil nil] [cl-struct-sepinfo nil nil nil "	" nil nil nil nil nil nil] [cl-struct-sepinfo nil nil nil nil nil nil nil nil nil nil] nil nil "	" "
+" nil nil t ((score . [2 2 [1 1 0] [1 1 0]]))]
+(
+
+["1.2" 1 ";;; do nothing
+(qatr-run)" "t" 1 1 "" (automatic t)]
+
+["1.2.3" 1 "Wait for the moon to be nigh.  Smell the widget." "Smells good." 1 1 "" nil]
+
+["1.2.4" 1 "Subject the widget to immense time, perhaps one or two epochs." "Persistence of widget." 0 0 "" nil]
+
+)

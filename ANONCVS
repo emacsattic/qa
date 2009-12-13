@@ -1,0 +1,17 @@
+Anonymous CVS is available for the "qa" module.
+Here are the commands to use:
+
+  rootopt='-d :pserver:anonymous@cvs.glug.org:/home/ttn/cvsroot'
+
+  cvs $rootopt login    # just type RET at the prompt
+
+  cvs $rootopt co qa
+
+Look at autogen.sh to get started.
+
+Here are some cvs tags and their meanings:
+
+  v-0-7 -- release 0.7
+  v-0-8 -- release 0.8
+
+Happy hacking!

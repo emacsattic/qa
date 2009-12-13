@@ -1,0 +1,15 @@
+Test Run     Spec Ref: \spec-item-ref,intdotint,unreachable
+              Seq Num: \subseq-num,unreachable
+
+Properties:
+\props,plist,unreachable
+
+Test Action:
+\action,unreachable
+
+Expected Result:
+\expected-result,unreachable
+
+Actual Result:
+\actual-result
+

@@ -1,0 +1,489 @@
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in (AC_INIT): Bump version to "0.9" for release.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* test-run.fmt: Delete eof Local Variables block.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/qa.texi: Use `@deffn {Command}' for interactive commands.
+	(Internals): Use `defmac' for `while-qa-session'.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el (tcdb-mapirec): Use `maprecords'.
+	(qa-run-tests): Use `message' instead of `db-log'.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el (qa-run-tests): Use hyphens in date format.
+	(qa-html-from-test-run): Likewise.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tcdb.fmt: Delete eof Local Variables block.
+	* GNUmakefile.in (qa-data-files): Remove tcdb-dbconf.el.
+	* qa.el: Incorporate tcdb-dbconf.el.
+	* tcdb-dbconf.el: Delete file.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el (qa-run-tests): Use `(setf (database-print-name ...))'.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in: Convert AC_OUTPUT to AC_CONFIG_FILES + AC_OUTPUT.
+	(AC_CONFIG_FILES): Add doc/GNUmakefile.
+
+	* doc/GNUmakefile.in: New file.
+	* doc/Makefile: Delete file.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* configure.in: Use two-arg AC_INIT form.
+	No longer source file VERSION.
+	(PACKAGE, VERSION): Delete AC_SUBST vars.
+
+	* GNUmakefile.in (PACKAGE, VERSION): New vars.
+	(dd): Use $(PACKAGE) and $(VERSION).
+	(dist): Use $(PACKAGE).
+	(instdatadir): Likewise.
+
+	* VERSION: Delete file.
+
+2005-10-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* GNUmakefile.in (cvs-state-summary): New target.
+
+2005-10-01  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tcdb-dbconf.el: Use `define-displaytype-from-displayspec'
+	and `define-recordfieldtype-from-recordfieldspec' with keyword
+	arguments, instead of make-FOO and FOO-set-ATTR funcs.
+
+2005-01-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/qa.texi: For all @node lines,
+	remove next, prev and parent node names.
+
+2005-01-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/qa.texi (Editing Test Cases): Remove mernst email addr.
+
+2005-01-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tcdb.template: Use `\t' and `\n' escape sequences in strings.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el (tcdb-mapirec): New func.
+	(tcdb-jump): Use it.
+	(qa-html-from-test-run): Likewise.
+	(qa-run-tests): Likewise.
+	Also, use `maprecords'.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el: Use `mapc' where appropriate.
+
+2004-08-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* GNUmakefile.in: No longer use Id, RCSfile or Revision
+	version control tags.  Instead, use State and Name.
+	* qa.el: Likewise.
+	* doc/Makefile: Likewise.
+	* doc/qa.texi: Likewise.
+	* random.spec: Likewise.
+
+	* configure.in: Update copyright.
+	No longer use Id, RCSfile or Revision
+	version control tags.  Instead, use State and Name.
+
+2004-08-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el: No longer quote `lambda' forms.
+
+2004-08-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* qa.el: Update copyright.
+	(qa-pushnew): Delete macro.
+	Convert call sites to use `add-to-list'.
+
+2004-08-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/qa.texi (QA Methodology): Update url.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* VERSION (VERSION): Bump to "0.8" for release.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* GNUmakefile.in (extradist): Add INSTALL.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/Makefile (version.texi): Also set var YYYYMMDD.
+
+	* doc/qa.texi (Top): Use @value{YYYYMMDD} instead of RCS `Date' tag.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* GNUmakefile.in (minusdist): New var.
+	(dist): Delete files in $(minusdist) from $(dd).
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* GNUmakefile.in: Update copyright.
+	(check): New target.
+	(examples): Delete var.
+	(extradist): Remove VERSION, README, NEWS, ChangeLog
+	and $(examples).  Add install-sh, doc/version.texi,
+	doc/*.html and doc/*.info.
+	(dirlist-cmd): Delete var.
+	(disttag): New var.
+	(dist): Add checks for CVS subdir and non-empty $(disttag).
+	Rewrite RCS-specific dirtree-copy to use "cvs export" instead.
+	Add kludge to clean up CVS/Entries file.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/Makefile (version.texi): New target.
+	(docs): Also depend on version.texi.
+	(clean): Also delete version.texi.
+
+	* doc/qa.texi: Add "@include version.texi".
+	(Top): Use @value{VERSION} instead of hardcoded value.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* doc/Makefile: Update copyright.
+	(%.html:%.texi): Use makeinfo instead of texi2html.
+
+	* doc/qa.texi: Update copyright.
+	Use @ifnottex around Top node instead of @ifinfo.
+
+2004-01-21  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* VERSION (devrelease_today): Delete var.
+	(hacking): New var.
+	(QA_MINOR_VERSION): No longer use `devrelease_today'.
+	(QA_VERSION): Include `hacking'.
+
+1999-11-21  thi  <ttn@mingle.glug.org>
+
+	* test-run.fmt, tcdb.fmt: Simplify tcdb-dbconf.el loading.
+
+	* GNUmakefile.in (install-program-files):
+	In installation fragment, also extend
+	`load-path' w/ `$(instdatadir)'.
+
+	* GNUmakefile.in (extradist): Add configure.
+
+	* qa.el (qa-data-file): New func.
+
+	(qa-edit-tcdb, qa-run-tests,
+	qa-html-from-test-run): Use `qa-data-file'.
+
+	Add magic comment to indicate where to add installation info code.
+
+	* GNUmakefile.in (all): No longer do anything in subdir `examples'.
+
+	(SHELL, srcdir, top_srcdir, VPATH, prefix, exec_prefix, bindir,
+	sbindir, libexecdir, datadir, sysconfdir, sharedstatedir,
+	localstatedir, libdir, infodir, mandir, includedir, oldincludedir,
+	lispdir): New vars, w/ values set by ./configure.
+
+	(qa-data-files, instdatadir): New vars.
+
+	(extradist): Remove INSTALL.  Add mkinstalldirs.
+
+	(clean): Remove qa.el.installed and data files in subdir `examples'.
+
+	(docs, install, install-program-files, install-docs,
+	as-user, as-user-home-local): New targets.
+
+1999-11-20  thi  <ttn@mingle.glug.org>
+
+	* configure.in: New file.
+
+	* tcdb.template: Move comments around, no functional change.
+
+	* doc/qa.texi: Update homepage.
+	Run through spell-checker.
+
+	* GNUmakefile.in: Rename file from Makefile.
+
+	* doc/qa.texi: Update for QA 0.7.
+
+	* GNUmakefile.in: Re-introduce lost RCS tags.
+
+	(snapshot): Fix bug by omitting use of find(1).
+
+1999-06-26  thi  <ttn@mingle.glug.org>
+
+	* doc/qa.texi: Update for QA 0.6.
+
+1999-05-02  thi  <ttn@mingle.glug.org>
+
+	* Makefile (snapshot):
+	No longer omit EDB when tarring (it is no longer here).
+
+1999-04-28  thi  <ttn@mingle.glug.org>
+
+	* qa.el (qa-read-file-name):
+	Also save read filename onto `file-name-history'.
+
+	(qa-begin-session): Use `copy-keymap' for `orig-database-view-mode-map'.
+
+	* qa.el (qa-begin-session):
+	Rearrange body so that exception case is last.
+
+1999-04-26  thi  <ttn@mingle.glug.org>
+
+	* qa.el (tcdb-display-relevance-chain):
+	No longer make output window as small as
+	possible.
+
+	(qatr-run): New stub macro.
+
+	(qa-run-tests): Handle `automatic' test cases.
+
+	* doc/qa.texi: Update for QA 0.5
+
+	* test-run.fmt: Add area for new field `props'.
+
+	* tcdb.template: Add field `props' of type `plist'.
+
+1999-04-25  thi  <ttn@mingle.glug.org>
+
+	* tcdb.fmt: Add area for new field `props'.
+
+	* tcdb-dbconf.el (intdotint-validate):
+	Use `run-hook-with-args' instead of `funcall'.
+
+	(plist-validate, plist-to-string, string-to-plist, plist<, plist=):
+	New funcs.
+
+	Add code to create and init `plist' displayspec and recordfieldspec.
+
+	* qa.el (qa-begin-session, qa-finish-session):
+	Munge and restore, respectively,
+	keymap `database-view-mode-map' w/ tcdb commands.
+
+	(tcdb-display-relevance-chain): Make output window as small as possible.
+
+	(tcdb-force-redisplay): Use more reliable method.
+
+	(tcdb-toggle-automatic): New command.
+
+	(tcdb-add-case): Also clear out `props' field.
+
+	(qa-edit-tcdb): Handle init for new `props' field.
+	No longer do `local-set-key', key binding now in `qa-begin-session'.
+
+1999-04-17  thi  <ttn@mingle.glug.org>
+
+	* Makefile (examples):
+	Use wildcard for this var instead of hard-coding.
+
+	(extradist): Include ChangeLog.
+
+	* qa.el (qa-html-from-test-run): Regularize file mtime output.
+
+	* qa.el (qa-session):
+	Delete var, now a property of symbol `qa'.  Update users.
+
+	(qa-get, qa-put): Use symbol `qa' instead of `qa-session'.
+
+	(qa-read-file-name): New func.
+
+	(qa-instantiate-template): Rename from `tcdb-instantiate-template'.
+
+	(qa-push-open-file): Delete, functionality inlined.
+
+	(qa-begin-session, qa-edit-tcdb, qa-run-tests, qa-html-from-test-run):
+	Use `qa-read-file-name'.
+	No longer set qa properties: `tcdb', `trun' and `html'.
+
+	(qa-edit-tcdb): Fix typo.
+
+1999-04-15  thi  <ttn@mingle.glug.org>
+
+	* Makefile (extradist): Include INSTALL file.
+
+	* Makefile (what): Remove test target.
+
+	* tcdb.template: Include copyright.
+
+	* examples/Makefile (all): Use hard link since NT sucks.
+
+	* qa.el: Comment munging.
+
+	(qa-run-tests): Fix omission bug: Pass db to `database-make-local'.
+
+	(qa-html-from-test-run): Fix typos.
+
+	* Makefile (dist): Rework `$(extradist)' copying to handle subdirs.
+
+	* doc/qa.texi: Update for 0.3.
+
+	* Makefile (examples): New var.
+	(extradist): Include `$(examples)'.
+
+	* qa.el (while-qa-session): New context macro.
+
+	(qa-log): Call `qa-display-session-log' if that buffer is around.
+	Use `while-qa-session'
+
+	(qa-display-session-log): Use `while-qa-session'.
+
+	(qa-push-open-file, qa-snarf-spec-items): New funcs.
+
+	(qa-begin-session): Use `while-qa-session'.
+	Handle already-begun sessions.
+	Log spec file name.
+	No longer reset properties.
+	Broke out snarfing into `qa-snarf-spec-items'.  Call.
+
+	(qa-finish-session): Use `while-qa-session'.
+	Take optional prefix arg `force' which cleans up unconditionally.
+	Handle no-current-session case.
+
+	(tcdb-instantiate-template): Rename from `qa-tcdb-instantiate-template'.
+	Expect substitute areas to have a format tag (either "%s" or "%S").
+
+	(qa-tcdb-display-spec-item): Delete, not used.
+
+	(tcdb-display-relevance-chain): Use `while-qa-session'.
+	Rename from `qa-tcdb-display-relevance-chain'.
+	Rework to use new spec-items (in-memory) format.
+
+	(tcdb-prep-display-buffer): New func.
+
+	(tcdb-force-redisplay): Use `while-qa-session'.
+	Rename from `qa-tcdb-force-redisplay'.
+	Use `display-record' instead of backward/forward hack.
+
+	(tcdb-add-case): Use `while-qa-session'.
+	Rename from `qa-tcdb-add-case'.
+
+	(tcdb-delete-case): Use `while-qa-session'.
+	Rename from `qa-tcdb-delete-case'.
+
+	(tcdb-jump, tcdb-other, tcdb-exit): New funcs.
+
+	(qa-tcdb-mode): Delete, no longer using `auto-mode-alist' hooks.
+
+	(qa-edit-tcdb): New func, w/ most of guts of former `qa-tcdb-mode'.
+
+	(qa-start-test-run, qa-so-far-so-good, qa-give-up, qa-resume-test-run):
+	Delete, no longer supporting interruptable test runs.
+
+	(qa-run-tests, qa-html-from-test-run): New funcs.
+
+	For load-time actions, push quoted lambda, instead of unquoted (this
+	is not Scheme!).
+
+	(kill-buffer-hook): Log closing of files in `open-files' property.
+
+	Unbind `qa-pushnew' when done with it.
+
+1999-04-14  thi  <ttn@mingle.glug.org>
+
+	* tcdb.template: Fix typo.
+
+	* examples/Makefile (imported): Add tcdb-dbconf.el
+
+	* Makefile (all): Recurse into subdir examples.
+
+	* examples/Makefile: Typo.
+
+	* examples/Makefile: New file.
+
+	* tcdb.template: New template.
+
+	* test-run.fmt: New file.
+
+	* tcdb.fmt: New format.
+
+	* Makefile (snapshot): New target.
+
+1999-04-12  thi  <ttn@mingle.glug.org>
+
+	* Makefile (extradist): Add NEWS.
+
+	* doc/qa.texi: Add Revision to welcome.
+
+1999-04-11  thi  <ttn@mingle.glug.org>
+
+	* doc/qa.texi: Remove VERSION number hardcoding.
+
+	* Makefile (docs): Delete var.
+
+	(qa.el.info, qa.el.html): Delete targets.  Update dep targets.
+
+	* doc/Makefile: New file.
+
+	* doc/qa.texi: Rename "qa.el" to "QA".
+
+	* Makefile (dd): Make dependent on ./VERSION instead of hardcoding.
+
+	* doc/qa.texi: Update for qa-0.2.
+
+	* tcdb.template, tcdb-dbconf.el, examples/random.spec, tcdb.fmt:
+	New file.
+
+	* qa.el: Require `database'.  This is satisfied by edb-1.21.
+
+	(qa-tcdb-mode-map, qa-tcdb-cursor, qa-tcdb-eoh-mark): Delete, made
+	superfluous by EDB.
+
+	(qa-display-session-log): Renamed from `qa-show-session'.
+	Handle non-session invocation.
+
+	(product, platform, spec-buffer-mtime): Delete these properties of
+	`qa-session', unused.
+	(open-files): Add property to `qa-session'.
+
+	(qa-begin-session): Visit spec file read-only to prevent changes.
+
+	(qa-finish-session): Redo structure as `cond' instead of nested-`if'.
+	Do not complete normally if there are `open-files'.  Widen `spec-buffer'.
+
+	(qa-tcdb-form, qa-tcdb-uglify, qa-tcdb-prettify, qa-tcdb-next,
+	qa-tcdb-prev, qa-tcdb-add, qa-tcdb-commit-edit, qa-tcdb-jump,
+	qa-tcdb-kill, qa-tcdb-list): Delete, obsoleted by EDB.
+
+	(qa-tcdb-mode): Rework to use EDB.
+
+	(qa-tcdb-handler): Delete, obsoleted by `qa-tcdb-mode'.
+
+	(qa-tcdb-instantiate-template, qa-tcdb-display-spec-item,
+	qa-tcdb-display-relevance-chain, qa-tcdb-force-redisplay,
+	qa-tcdb-add-case, qa-tcdb-delete-case): New funcs.
+
+	At load time, no longer munge `file-name-handler-alist'.
+	At load time, add session guard for `spec-buffer' to
+	`kill-buffer-query-functions'.
+
+1999-04-08  thi  <ttn@mingle.glug.org>
+
+	* Makefile (docs): New var.
+
+	(dist): Also make $(docs) in distribution.
+
+	* qa.el, doc/qa.texi: New file.
+
+	* Makefile (dist): No longer depend on configure.
+
+	* Makefile (all): New target.
+
+	(dist): Do not make docs in subdir doc (there is no such dir).
+
+	* Makefile (extradist): Update.
+
+	* Makefile: New file.
+

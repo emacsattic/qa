@@ -1,0 +1,1009 @@
+<html lang="en">
+<head>
+<title>The QA Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="The QA Manual">
+<meta name="generator" content="makeinfo 4.6">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+--></style>
+</head>
+<body>
+<h1 class="settitle">The QA Manual</h1>
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Top">Top</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Copying">Copying</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#dir">(dir)</a>
+<br>
+</div>
+
+<h2 class="unnumbered">The QA Manual</h2>
+
+<p>Welcome to The QA Manual,
+compiled 2005-10-03,
+for distribution with QA 0.9.
+
+<p>QA is a system that helps the developer manage specification files, test
+cases, test run results, and test run reports (html output).  Hopefully,
+by making QA easy to understand and handle, more people will do it!
+
+<ul class="menu">
+<li><a accesskey="1" href="#Copying">Copying</a>:                      Know your rights
+<li><a accesskey="2" href="#Overview">Overview</a>:                     This framework in a bigger framework
+<li><a accesskey="3" href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>:       Includes other session management info
+<li><a accesskey="4" href="#Editing%20Test%20Cases">Editing Test Cases</a>:           How to manipulate the test case database
+<li><a accesskey="5" href="#Starting%20a%20Test%20Run">Starting a Test Run</a>:          Efficient note taking
+<li><a accesskey="6" href="#Resuming%20a%20Test%20Run">Resuming a Test Run</a>:          Handling interruption gracefully
+<li><a accesskey="7" href="#Submitting%20Bug%20Reports">Submitting Bug Reports</a>:       Interfacing with bug-tracking systems
+<li><a accesskey="8" href="#Customization">Customization</a>:                Tweaking and extension
+<li><a accesskey="9" href="#Internals">Internals</a>:                    Notes for the developer
+
+<p>
+</p><li><a href="#Function%20Index">Function Index</a>:               Various ways to find things
+<li><a href="#Variable%20Index">Variable Index</a>: 
+<li><a href="#Concept%20Index">Concept Index</a>: 
+</ul>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Copying">Copying</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Overview">Overview</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Top">Top</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Copying</h2>
+
+<p>This program and the accompanying documentation is released under the
+GNU General Public License, version 2.  See file COPYING in the
+distribution for a copy of this license.  In Emacs, you can type
+<code>C-h C-c</code>.
+
+<p>The QA home page is
+&lt;<code>http://www.glug.org/people/ttn/software/qa/</code>&gt;.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Overview">Overview</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Copying">Copying</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Overview</h2>
+
+<blockquote>
+And what is good, Phædrus,
+And what is not good... 
+Need we ask anyone to tell us these things?
+
+     <p>--Robert M. Pirsig, <em>Zen and the Art of Motorcycle Maintenance</em>
+</blockquote>
+
+<p>In the pursuit of quality, one can go insane not knowing where the
+boundaries of the problem lie.  If we are to assure quality, we need to
+make a choice as to how to approach the question, and perhaps even more
+importantly, figure out: what is the question?  Ultimately, we find that
+how we ask the question is a large part of the answer.
+
+<ul class="menu">
+<li><a accesskey="1" href="#QA%20Methodology">QA Methodology</a>: 
+<li><a accesskey="2" href="#QA%20Definitions">QA Definitions</a>: 
+</ul>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="QA%20Methodology">QA Methodology</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#QA%20Definitions">QA Definitions</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Overview">Overview</a>
+<br>
+</div>
+
+<h3 class="section">QA Methodology</h3>
+
+<p>This section describes the QA methodology upon which QA is built.
+
+<h3 class="subsection">General Approach</h4>
+
+<p>The QA process is intertwined with that of product development, although
+the bulk of the work is visible only after a <dfn>drop</dfn>.  Before the
+drop, however QA is involved with the following areas:
+
+     <ul>
+<li>feature documentation
+<li>component documentation
+<li>testability input
+</ul>
+
+<p>The documentation aspects of QA arise because at the heart of QA's
+methods is a comparison between what is "right" and what is "actual". 
+Defining what is correct is the responsibility of everyone on the team
+(both development and QA), but it falls on QA's shoulders the burden of
+documenting the product, both at the feature (user, black-box) level and
+at the component (white-box) level, because such <dfn>specification</dfn>
+directly leads to the production of <dfn>test cases</dfn>.
+
+<p>After the drop, QA does <dfn>test runs</dfn> to determine the build
+<dfn>confidence level</dfn> and publishes the result when done.  This
+includes the build label, the overall confidence level, and a breakdown
+of what tests passed and what failed.
+
+<p>When bugs are found they are entered into the bug-tracking system, and
+new bugs are also converted into test cases for regression testing.
+
+<p>The actual front end used to administer test cases and test runs is
+<a href="http://www.glug.org/people/ttn/software/qa/">QA</a>, the subject of the
+following chapters in this manual.
+
+<h3 class="subsection">Test Case Approach</h4>
+
+<p>For <dfn>black box</dfn> test cases, there are basically three areas
+covered:
+
+     <ul>
+<li>look and feel / style
+<li>grammar / spelling / connectivity
+<li>functionality
+</ul>
+
+<p>The first area must be done manually, and can be done by anyone, not
+just QA.  The test cases here are mostly the result of issues raised
+over time, rather than prepared beforehand.
+
+<p>The second area is amenable to automatic tools, such as a dead-link
+checker.  The test cases will be to run the tool over the build
+expecting zero errors and only a reasonably small number of
+warnings.
+
+<p>The third area must be done manually.  High-level specification is used
+to formulate the test cases.
+
+<p>For <dfn>white box</dfn> test cases, the component specification is used to
+formulate the test cases.  There is a test harness usually written in
+the language of the software implementation that facilitates the test
+run process.  Test cases include code that fits within this harness.
+
+<h3 class="subsection">Automation</h4>
+
+<p>A particular test case can be automated by attaching to it the
+<code>automatic</code> property.  In this case, the action to be performed
+should be a single Emacs lisp form that properly drives the (possibly
+external) test harness.  The form is eval'ed with the default directory
+set to that of the test case database.  The result should be a string
+that can be compared with the <code>expected-result</code>.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="QA%20Definitions">QA Definitions</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#QA%20Methodology">QA Methodology</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Overview">Overview</a>
+<br>
+</div>
+
+<h3 class="section">QA Definitions</h3>
+
+<p>It's good to agree on what we're talking about.
+
+<ul class="menu">
+<li><a accesskey="1" href="#specification">specification</a>: 
+<li><a accesskey="2" href="#test%20case">test case</a>: 
+<li><a accesskey="3" href="#scope">scope</a>: 
+<li><a accesskey="4" href="#test%20run">test run</a>: 
+<li><a accesskey="5" href="#drop">drop</a>: 
+<li><a accesskey="6" href="#confidence%20level">confidence level</a>: 
+</ul>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="specification">specification</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#test%20case">test case</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">specification</h4>
+
+<p>The specification is some written, version-controlled document
+describing the product at various levels of abstraction.  It includes a
+feature list targeted at the end user and also lower-level descriptions
+of the product components, their interfaces, and their behavior. 
+Although too much detail is discouraged (a pain to write, and hard to
+maintain), enough information must be available for QA to produce at
+least one <em>test case</em> per feature or component.
+
+<p>In the absence of a proper engineering specification, a marketing spec
+(just the feature list) should be used as the basis for fleshing out a
+full spec.  In no cases should QA write a test case without referencing
+some part of this spec.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="test%20case">test case</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#scope">scope</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#specification">specification</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">test case</h4>
+
+<p>The test case is a description of how to go about doing a <em>test run</em>
+(see below).  It must include the following information:
+
+     <ul>
+<li>identification number
+<li>specification reference
+<li>chaining test case (if applicable)
+<li>product
+<li>test platform
+<li>scope
+<li>action
+<li>expected result
+</ul>
+
+<p>The main parts of the test case are the <em>action</em> and the
+<em>expected result</em>, both of which should be as specific as possible. 
+Avoid ranges of behaviors, using instead simple directives and
+descriptions.  For example, the action "type in host name" is still
+considerably vague; the host name might be a single word, or a
+partially-qualified name, or a fully-qualified name.  Furthermore,
+should the host be a valid host or should it a new name?  In this case,
+we would want something along the lines of "type in FQDN of existing
+host and press Enter".
+
+<p>Similarly, the expected result should be as specific as possible within
+the defined scope of the test (see below).
+
+<p>The <em>test platform</em> includes information such as browser, OS, and
+associated version numbers.
+
+<p>The <em>specification reference</em> is section or paragraph number in the
+specification (see above) that this test case is attempting to cover. 
+This field should <em>never</em> be blank.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="scope">scope</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#test%20run">test run</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#test%20case">test case</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">scope</h4>
+
+<p>The scope of the test is colloquially divided into "black box" and
+"white box".  These indicate the rough division between end user and
+programmer points of views.
+
+     <ul>
+
+     <li>black box
+
+     <p>Black box testing is to ensure that the end user experience is, in order
+of priority:
+
+          <ul>
+<li>consistent
+<li>predictable
+<li>functional
+</ul>
+
+     <p>The functional aspect is important but note that it is listed last. 
+From the user's perspective, consistency and predictability are
+stressed, following from the principle of least-surprise.
+
+     <p>From the end user's point of view, functionality is definable by the
+product and so this area of testing looks at the connection between what
+the product says it will do and what it actually does.  Thus, we
+consider high-level explanation (i.e., narrative) to be in the scope of
+black box testing.
+
+     </p><li>white box
+
+     <p>White box testing is any testing that does not directly address the end
+user experience, and often makes use of methodologies that are
+unavailable to the end user.  Here, the primary goal is to ensure proper
+functionality of the product as given in the spec (see above).
+
+     <p>White box testing involves testing the components that make up the
+product, using an environment that has visibility into the component
+interfaces.
+
+</ul>
+
+<p>The scope of a test case need not be limited by "black box" and "white
+box".  Especially for white box testing, it is more useful to consider
+the functional areas that are being tested, for example "database
+interface" or "session management".
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="test%20run">test run</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#drop">drop</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#scope">scope</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">test run</h4>
+
+<p>A test run is the application of a test case to a product instance. 
+Thus, a test run includes the following information:
+
+     <ul>
+<li>timestamp
+<li>test case id
+<li>product build id (number or date)
+<li>actual result of test
+<li>status
+</ul>
+
+<p>The <em>timestamp</em> and <em>test case id</em> together uniquely identify
+a test run.  Similarly, the <em>product build id</em> uniquely identifies
+an instance of the product, i.e., a particular build that is being
+tested.  These forms of identification are important in order to avoid
+duplication in testing.
+
+<p>The <em>actual result</em> of the test follows the form of the expected
+result (which is influenced by the scope of the test).  As the field
+name implies, the contents are based on fact and thus should be stated
+in the past tense.  For example, if the expected result is "widget
+changes color to green", and such behavior was indeed observed, the
+actual result would be "widget changed color to green".  Although these
+grammar rules may seem nit-picky, they do serve to emphasize that actual
+results means empirical observation.
+
+<p>Finally, the <em>status</em> is one of "pass", "fail" or "inconclusive".
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="drop">drop</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#confidence%20level">confidence level</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#test%20run">test run</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">drop</h4>
+
+<p>This term is used when the development team hands to the QA team a
+product build deemed featureful and stable enough for testing using QA
+methods (as opposed to any pre-integration testing that developers may
+do themselves).  The build must be tagged with a unique label (perhaps
+an increasing integer or dotted-integer, or the date) before drop.  It
+may be necessary to include in the drop development tools that are
+changing over time, as well, to ensure reproducibility in the build. 
+These tools should be labeled with the same name.
+
+<p>The mechanics of a drop are simple: take a snapshot of the build, label
+it, and place it somewhere where QA can wrap black-box or white-box
+environments around it.  Ideally, the drop is relocatable by QA,
+although sometimes this may not be possible.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="confidence%20level">confidence level</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#drop">drop</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#QA%20Definitions">QA Definitions</a>
+<br>
+</div>
+
+<h3 class="subsection">confidence level</h4>
+
+<p>The confidence level describes the overall result of all the test runs. 
+Many complicated formulas are possible, but for now we use:
+
+<p><code>confidence_level = percent_tests_possible * percent_tests_passed</code>
+
+<p>This formula takes into account both QA and developer responsibilities. 
+Because the right-hand-side elements are percentages, the result is also
+expressed as a percentage or as a decimal number between 0.0 and 1.0.
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Beginning%20a%20QA%20Session">Beginning a QA Session</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Editing%20Test%20Cases">Editing Test Cases</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Overview">Overview</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Beginning a QA Session</h2>
+
+<p>Interaction with QA is based on a session concept.  In some ways, this
+is like "logging in" in that it establishes context for subsequent
+actions.  To begin a session, use <kbd>M-x qa-begin-session</kbd>.  Likewise,
+when you are finished, use <kbd>M-x qa-finish-session</kbd>.
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-begin-session</b><i> spec-file
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Find <var>spec-file</var> and synchronize internal data structures. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-finish-session</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Calls <code>qa-show-session</code> one last time and then resets all internal
+variables. 
+</td></tr>
+</table>
+
+<p>As a convenience, there is a session log available that QA updates on
+certain occasions.  You are free to add notes and review the log at any
+time with the commands <code>qa-log</code> and <code>qa-show-session</code>.
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-log</b><i> msg &amp;rest args
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Log timestamped <var>msg</var>, which may contain formatting sequences. 
+<var>args</var> are used to consume formatting sequences.  (This uses
+<code>format</code>.)  When called interactively, <var>msg</var> must be a simple
+string (without formatting sequences). 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-display-session-log</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Display the QA session log in a buffer called "*QA Session*". 
+</td></tr>
+</table>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Editing%20Test%20Cases">Editing Test Cases</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Starting%20a%20Test%20Run">Starting a Test Run</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Editing Test Cases</h2>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-edit-tcdb</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Edit a test case database.
+
+     <p>This is basically a wrapper around <code>db-find-file</code>, part of EDB
+(the Emacs Database) written by Michael Ernst.
+
+     <p>Each test case entry is shown in the display buffer by itself.  Also, in
+another window, the text of each case's referenced spec-item is shown in
+a buffer named "*QA Spec Relevance Chain*", as well as parent nodes of
+the spec item, as far up the chain as possible.
+
+     <p>This is known as viewing mode, and <code>n</code> and <code>p</code> can be used to
+show the next and previous records, respectively.  See <a href="edb.html#Database%20View%20mode">Database View mode</a>, for details.  In
+addition to the many commands supplied by EDB, the following keys are
+bound:
+
+          <dl>
+
+          <br><dt><kbd>a</kbd>
+          <dd>tcdb-add-case (This binding supersedes the command
+<code>db-add-record</code> normally bound to <code>a</code> by EDB.)
+
+          <br><dt><kbd>d</kbd>
+          <dd>tcdb-delete-case (This binding supersedes the command
+<code>db-delete-record</code> normally bound to <code>d</code> by EDB.)
+
+          <br><dt><kbd>;</kbd>
+          <dd>tcdb-toggle-automatic
+
+          <br><dt><kbd>C-l</kbd>
+          <dd>tcdb-force-redisplay
+
+          <br><dt><kbd>j</kbd>
+          <dd>tcdb-jump (This binding supersedes the command <code>db-jump-to-record</code>
+normally bound to <code>j</code> by EDB.)
+
+          <br><dt><kbd>M-o</kbd>
+          <dd>tcdb-other
+
+          <br><dt><kbd>q</kbd>
+          <dd>tcdb-exit (This binding supersedes the command <code>db-quit</code> normally
+bound to <code>q</code> by EDB.)
+
+          <br><dt><kbd>x</kbd>
+          <dd>tcdb-exit (This binding supersedes the command <code>db-exit</code> normally
+bound to <code>x</code> by EDB.)
+
+     </dl>
+
+     <p>To edit the current record, type <code>TAB</code> to go into editing mode (and
+to move from field to field).  In editing mode, you can use normal Emacs
+commands to move about, and to insert or delete text within the input
+areas.  Note that the spec-item reference and sequence number fields are
+not editable.
+
+     <p>When done editing, type <code>C-c C-c</code> to resume the viewing mode. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-add-case</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+This command adds a test case to the database.
+
+     <p>The spec-item reference is taken from the current test case, and the
+sequence number is determined by adding 1 to the largest sequence number
+for the current spec-item.  A new test test is created, with the action
+and expected-result fields cleared, ready for input. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-delete-case</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Currently, this command prints a warning message only. 
+If you really want to delete a test case, use <code>M-x
+db-delete-record</code>.  [TODO: Figure out synch schema.] 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-toggle-automatic</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Toggle the <code>automatic</code> property of a test case.  If the test case
+has no text in its <code>action</code> field, this command (when toggling to
+<code>t</code>) also sets up a LISP comment and an empty call to
+<code>qatr-run</code>.  See <a href="#QA%20Methodology">Automation</a>. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-force-redisplay</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+This command redisplays the current test case, including the spec-item
+text from the spec buffer. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-jump</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+This command asks you for a spec item reference and then jumps to the
+test case that uses that reference.  When jumping, the index of the test
+case you left is saved.  This is useful for <code>tcdb-other</code>. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-other</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Jump back to the the previous test case where you jumped from.  This
+repeated invocations of this command bounce back and forth between two
+test cases.  This can be useful when the test cases are similar, or
+refer to each other in some way. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>tcdb-exit</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Offer to save the database if needed, then quit.  This command also
+deletes the relevance chain buffer (and window). 
+</td></tr>
+</table>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Starting%20a%20Test%20Run">Starting a Test Run</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Resuming%20a%20Test%20Run">Resuming a Test Run</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Editing%20Test%20Cases">Editing Test Cases</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Starting a Test Run</h2>
+
+<p>All the preparation of the spec file and test cases is for the sole
+purpose of doing a <dfn>test run</dfn>.  A build is specified and then each
+test case is applied to the build.  The actual application can be manual
+(done by a human being) or automatic (done by a script).  This is all
+specified on a per-test-case basis.
+
+<p>Aside from the application of the test case to the build, the rest of
+the test run is basically an exercise in accounting.  This is where
+QA comes in - to help you keep track of the test run results in as
+painless a way as possible.
+
+<p>To start a test run, use <code>qa-run-tests</code>.
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-run-tests</b><i>
+     </i></td>
+<td align="right">Command</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+For each test case, prompt for application and record the results.
+
+     <p>If a test case is has the <code>automatic</code> property, its action is
+evaluated by Emacs.  See <a href="#QA%20Methodology">Automation</a>, for more info. 
+Otherwise, Emacs will present the required action in a buffer named by
+combining "*Test Run*" with the product name and test case identifier. 
+In this buffer, there is a place to record the actual result.  After
+typing in the result, type <code>[f11]</code> to commit.
+
+     <p>Sometimes the actual result matches the expected result but you don't
+want to type in the whole string (which can be error-prone, as well). 
+In this case, use <code>[f10]</code> to have Emacs do that for you.
+
+     <p>You may also skip the test case by typing <code>[f12]</code>.  There is no way
+to go backwards.
+
+     <p>After all the results are recorded, the test run is scored as an
+aggregate.
+
+     <p>[There will be hooks for bug reporting in a future version...] 
+</td></tr>
+</table>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Resuming%20a%20Test%20Run">Resuming a Test Run</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Submitting%20Bug%20Reports">Submitting Bug Reports</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Starting%20a%20Test%20Run">Starting a Test Run</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Resuming a Test Run</h2>
+
+<p>[Interruptible test runs are not supported.]
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Submitting%20Bug%20Reports">Submitting Bug Reports</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Customization">Customization</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Resuming%20a%20Test%20Run">Resuming a Test Run</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Submitting Bug Reports</h2>
+
+<p>[TODO]
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Customization">Customization</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Internals">Internals</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Submitting%20Bug%20Reports">Submitting Bug Reports</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Customization</h2>
+
+<p>[TODO]
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Internals">Internals</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Function%20Index">Function Index</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Customization">Customization</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="chapter">Internals</h2>
+
+<p>Here is documentation for internal concepts, variables and functions. 
+You should not rely on these to be stable in their name or methods. 
+They are included for completeness (and to help the developers keep
+track of things).
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-session</b><i>
+     </i></td>
+<td align="right">Variable</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+Non-nil if in the midst of a QA session. 
+Has useful properties hanging off of it.
+
+          <dl>
+
+          <br><dt><code>spec-buffer</code>
+          <dd>The buffer that holds the QA spec file.
+
+          <br><dt><code>spec-item-regexp</code>
+          <dd>Regexp used when snarfing spec items.  The first submatch (\1) is
+dotted-integer that uniquely identifies the spec item.
+
+          <br><dt><code>spec-items</code>
+          <dd>Buffer local alist of elements with form
+
+          <p>(dotted-num dnum-beg dnum-end descrip-beg descrip-end)
+
+          <p><code>dotted-num</code> is the key.  The -beg and -end elements are buffer
+positions resulting from a parse of the spec file.
+
+          <br><dt><code>open-files</code>
+          <dd>Files opened that are needed by the current QA session.
+
+          <br><dt><code>files</code>
+          <dd>An alist of file types and last used instance.  Currently, this includes
+<code>spec</code>, <code>tcdb</code>, <code>trun</code> and <code>html</code>.  These are set by
+<code>qa-read-file-name</code>.
+
+          <br><dt><code>score</code>
+          <dd>The score vector consisting of the form
+
+          <p>[number-ran number-passed run-array pass-array]
+
+          <p>This is also saved as a database-local variable in the test run file. 
+WARNING: This will change in the future!
+
+          <br><dt><code>orig-database-view-mode-map</code>
+          <dd><code>qa-begin-session</code> saves <code>database-view-mode-map</code> to this and
+<code>qa-finish-session</code> restores it.
+
+     </dl>
+     </td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>qa-get</b><i> prop
+     </i></td>
+<td align="right">Function</td>
+</tr>
+
+<tr>
+<td align="left"><b>qa-put</b><i> prop val
+     </i></td>
+<td align="right">Function</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+These wrap <code>get</code> and <code>put</code> of <code>qa-session</code> properties. 
+<var>prop</var> and <var>val</var> are treated as usual. 
+</td></tr>
+</table>
+
+<p>
+<table width="100%">
+<tr>
+<td align="left"><b>while-qa-session</b><i>
+     </i></td>
+<td align="right">Macro</td>
+</tr>
+</table>
+<table width="95%" align="center">
+<tr><td>
+A macro to enforce qa-session relevance. 
+</td></tr>
+</table>
+
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Function%20Index">Function Index</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Variable%20Index">Variable Index</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Internals">Internals</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="unnumbered">Function Index</h2>
+
+<ul class="index-fn" compact>
+<li><code>qa-begin-session</code>: <a href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>
+<li><code>qa-display-session-log</code>: <a href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>
+<li><code>qa-edit-tcdb</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>qa-finish-session</code>: <a href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>
+<li><code>qa-get</code>: <a href="#Internals">Internals</a>
+<li><code>qa-log</code>: <a href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>
+<li><code>qa-put</code>: <a href="#Internals">Internals</a>
+<li><code>qa-run-tests</code>: <a href="#Starting%20a%20Test%20Run">Starting a Test Run</a>
+<li><code>tcdb-add-case</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-delete-case</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-exit</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-force-redisplay</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-jump</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-other</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>tcdb-toggle-automatic</code>: <a href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><code>while-qa-session</code>: <a href="#Internals">Internals</a>
+</ul>
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Variable%20Index">Variable Index</a>,
+Next:&nbsp;<a rel="next" accesskey="n" href="#Concept%20Index">Concept Index</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Function%20Index">Function Index</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="unnumbered">Variable Index</h2>
+
+<ul class="index-vr" compact>
+<li><code>qa-session</code>: <a href="#Internals">Internals</a>
+</ul>
+<div class="node">
+<p><hr>
+Node:&nbsp;<a name="Concept%20Index">Concept Index</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="#Variable%20Index">Variable Index</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="#Top">Top</a>
+<br>
+</div>
+
+<h2 class="unnumbered">Concept Index</h2>
+
+<ul class="index-cp" compact>
+<li>Automation: <a href="#QA%20Methodology">QA Methodology</a>
+<li>confidence level: <a href="#confidence%20level">confidence level</a>
+<li>drop: <a href="#drop">drop</a>
+<li>QA Definitions: <a href="#QA%20Definitions">QA Definitions</a>
+<li>QA Methodology: <a href="#QA%20Methodology">QA Methodology</a>
+<li>scope: <a href="#scope">scope</a>
+<li>specification: <a href="#specification">specification</a>
+<li>test case: <a href="#test%20case">test case</a>
+<li>test run: <a href="#test%20run">test run</a>
+</ul>
+
+<div class="shortcontents">
+<h2>Short Contents</h2>
+<ul>
+<li><a href="#toc_Top">The QA Manual</a></li>
+<li><a href="#toc_Copying">Copying</a></li>
+<li><a href="#toc_Overview">Overview</a></li>
+<li><a href="#toc_Beginning%20a%20QA%20Session">Beginning a QA Session</a></li>
+<li><a href="#toc_Editing%20Test%20Cases">Editing Test Cases</a></li>
+<li><a href="#toc_Starting%20a%20Test%20Run">Starting a Test Run</a></li>
+<li><a href="#toc_Resuming%20a%20Test%20Run">Resuming a Test Run</a></li>
+<li><a href="#toc_Submitting%20Bug%20Reports">Submitting Bug Reports</a></li>
+<li><a href="#toc_Customization">Customization</a></li>
+<li><a href="#toc_Internals">Internals</a></li>
+<li><a href="#toc_Function%20Index">Function Index</a></li>
+<li><a href="#toc_Variable%20Index">Variable Index</a></li>
+<li><a href="#toc_Concept%20Index">Concept Index</a></li>
+</ul>
+</div>
+
+
+
+<div class="contents">
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top" href="#Top">The QA Manual</a>
+<li><a name="toc_Copying" href="#Copying">Copying</a>
+<li><a name="toc_Overview" href="#Overview">Overview</a>
+<ul>
+<li><a href="#QA%20Methodology">QA Methodology</a>
+<ul>
+<li><a href="#QA%20Methodology">General Approach</a>
+<li><a href="#QA%20Methodology">Test Case Approach</a>
+<li><a href="#QA%20Methodology">Automation</a>
+</li></ul>
+<li><a href="#QA%20Definitions">QA Definitions</a>
+<ul>
+<li><a href="#specification">specification</a>
+<li><a href="#test%20case">test case</a>
+<li><a href="#scope">scope</a>
+<li><a href="#test%20run">test run</a>
+<li><a href="#drop">drop</a>
+<li><a href="#confidence%20level">confidence level</a>
+</li></ul>
+</li></ul>
+<li><a name="toc_Beginning%20a%20QA%20Session" href="#Beginning%20a%20QA%20Session">Beginning a QA Session</a>
+<li><a name="toc_Editing%20Test%20Cases" href="#Editing%20Test%20Cases">Editing Test Cases</a>
+<li><a name="toc_Starting%20a%20Test%20Run" href="#Starting%20a%20Test%20Run">Starting a Test Run</a>
+<li><a name="toc_Resuming%20a%20Test%20Run" href="#Resuming%20a%20Test%20Run">Resuming a Test Run</a>
+<li><a name="toc_Submitting%20Bug%20Reports" href="#Submitting%20Bug%20Reports">Submitting Bug Reports</a>
+<li><a name="toc_Customization" href="#Customization">Customization</a>
+<li><a name="toc_Internals" href="#Internals">Internals</a>
+<li><a name="toc_Function%20Index" href="#Function%20Index">Function Index</a>
+<li><a name="toc_Variable%20Index" href="#Variable%20Index">Variable Index</a>
+<li><a name="toc_Concept%20Index" href="#Concept%20Index">Concept Index</a>
+</li></ul>
+</div>
+
+</body></html>

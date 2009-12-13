@@ -1,0 +1,216 @@
+NEWS for QA
+
+
+- 0.9 | 2005-10-03
+
+  - Internals clean up
+
+  - Tested against EDB 1.25
+
+
+- 0.8 | 2004-01-21
+
+  - "make check" supported
+
+	This target is to support standardization.
+	It doesn't actually do anything at the moment.
+
+  - Standard INSTALL file
+
+
+- 0.7 | 1999-11-21
+
+  - Installation now uses "./configure; make; make install" flow.
+
+	Standardizing on autoconf-based installation means that files
+	are now put in "expected" default places.  Users now simply need
+	to add to ~/.emacs the following form:
+
+	  (autoload 'qa-begin-session "qa" "begin qa session" t)
+
+	See README for more details.
+
+  - The manual has been spell-checked.
+
+
+- 0.6 | 1999-06-26
+
+  - Bug fixes
+
+	A bug was found in `qa-begin-session' whereby an ongoing session
+	exception would trash `database-view-mode-map'.  This was fixed
+	by moving the exception code to the end of the function.
+
+
+- 0.5 | 1999-04-26
+
+  - Support for `automatic' property
+
+	The test case database definition now includes a field named
+	`props', which is a normal property list.  (NOTE: This is an
+	incompatible change; QA-0.5 cannot be used on old databases.)
+	This field is shown in the form immediately above `action'.
+
+	When editing a test case database, `;' is bound to the command
+	`tcdb-toggle-automatic', which modifies the `automatic' property
+	in `props'.  You can think of the semicolon as the elisp comment
+	character.  If the `action' field is empty when toggling to t,
+	boilerplate elisp is inserted, which you can go on to modify as
+	needed.  Type `C-c C-c' to commit the change.  When toggling to
+	nil, the `action' field is not changed.
+
+	When doing `qa-run-tests', test cases where the `automatic'
+	property is t are run by Emacs; you will not be prompted for the
+	particular test case.  See the QA Manual for more info.
+
+  - Bug fixes
+
+    - More reliable redisplay method
+
+    - EDB key bindings are now restored on `qa-finish-session'.
+
+	The keys of `database-view-mode-map' used to be permanently
+	modified.  This is not desirable because there may be other
+	database types (besides type test case database) that need this
+	keymap.  So now we save the original value and restore it for
+	`qa-finish-session' -- this implies that other database types
+	cannot (easily) be used during a QA session.
+
+
+- 0.4 | 1999-04-16
+
+  - Minor bugfixes
+
+	The target `all' in examples/Makefile now uses hard links
+	instead of symlinks because usloth NT can't handle it.  Ugh.
+
+	HTML anomolies produced by `qa-html-from-test-run' are gone.
+
+	A typo was fixed in tcdb.template that prevented new test case
+	databases from being instantiated properly.
+
+  - INSTALL file
+
+	Towards GNU standards, this file now tells you that there is no
+	install procedure yet.
+
+
+- 0.3 | 1999-04-15
+
+  - Automatic support recognizing ".tcdb" is withdrawn.
+
+	It was found out that EDB does lots of tricky buffer name
+	manipulations, some of them confusing to Emacs when it tries to
+	do the right thing using a ".tcdb" entry in `auto-mode-alist'.
+
+	So, rather than continue the kludge, we now require editing of
+	test case databases to be explicit, using `qa-edit-tcdb'.  If
+	you do a normal `find-file' on foo.tcdb, you will see the guts
+	of the database.  Beware!
+
+  - The test run flow is in place.
+
+	You can now use `qa-run-tests' to do a test run.  A test case
+	database is used to prompt for application of a particular test
+	(the `action' field).  You can record the result in the field
+	`actual-result'.  If the expected result and the actual result
+	match the test is declared as passed.  If the actual result is
+	left blank, the test is declared inconclusive.  If the actual
+	result is different, the test is declared as failed.
+
+	There is a special keymap used that speeds up the entering of
+	data.  If the actual result is the same as the expected (the
+	test passed), you can type [f10] to have Emacs copy the field
+	automatically.  Other keys are displayed in the minibuffer for
+	each new test case.
+
+	Currently there is no way to abort a test run (even `C-g' does
+	not work because Emacs uses a recursive edit), although you can
+	make a checkpoint of the test run file at any time during the
+	run using the normal `C-x C-s'.
+
+	When the test run is complete (all test cases have been
+	addressed), the entire run is scored and the original test case
+	database history fields are updated.  This is so that when you
+	edit the tcdb you can see at a glance the behavior of the test
+	case.
+
+  - You can use `qa-html-from-test-run' to generate an HTML report.
+
+	This command takes a test run file (as specified to
+	`qa-run-tests' and a report filename, outputting the report
+	there.
+
+  - Session management keeps track of different files.
+
+	Typically the four kinds of files and their quantity per QA
+	session are: spec (one), tcdb (usually one), trun (one or more),
+	and html (one per trun).  All the qa-* commands conspire to keep
+	this info up to date if possible, supplying default filenames to
+	each other to reduce typing.
+
+  - Interactively adding a QA log entry may redisplay *QA Session*.
+
+	This is the buffer obtained from `qa-display-session-log'.  If
+	the buffer is killed, it is not regenerated by `qa-log', but if
+	it simply buried, it is displayed so you can see your words.
+
+  - Editing a test case database always shows the relevance chain.
+
+	A list of ancestral spec items (and their text) is maintained in
+	another window whenever you refresh the tcdb buffer, by either
+	moving around (`n' and `p') or explicit redraw (`C-l').  For
+	example, if you are looking at a test case that references spec
+	item X.Y.Z.Q.R, the spec items X.Y.Z.Q.R, X.Y.Z.Q, X.Y.Z, and so
+	forth, are shown.
+
+	You can delete the buffer "*QA Spec Relevance Chain*" at any
+	time, but it will always return.  However, exiting the database
+	editing with `x' or `q' will kill the buffer.
+
+  - There are more files in the examples subdirectory.
+
+	This includes test run and report (html) files.
+
+
+- 0.2 | 1999-04-12
+
+  - The test case database is now implemented using EDB.
+
+	EDB is the Emacs Database package written by Michael Ernst
+	<mernst@theory.lcs.mit.edu>.  It is full-featured and robust.
+	Files ending in ".tcdb" (test-case db) are automatically
+	treated as database files and initialized based on the spec
+	file.
+
+	At this time, there is no integration.  You will have to get EDB
+	and manually install it somewhere.
+
+  - Some bugs were fixed in the session management code.
+
+  - The documentation is now in subdir `doc'.
+
+	The docs still lead the implementation at this point.
+
+  - A simple example is in subdir `examples'.
+
+	This includes random.spec and random.tcdb.  The way to use this
+	is (to rtfm and then) do `M-x qa-begin-session', specifying the
+	spec file, and then `C-x C-f random.tcdb'.
+
+
+- 0.1 | 1999-04-08
+
+  - Initial release
+
+  - Mostly incomplete, but test-case database usable
+
+
+- The beginning
+
+	Local Variables:
+	mode: outline
+	outline-regexp: "\\(  \\)*- "
+	fill-column: 72
+	fill-prefix: "\t"
+	End:

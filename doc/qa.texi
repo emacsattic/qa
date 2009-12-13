@@ -1,0 +1,761 @@
+\input texinfo  @c -*-texinfo-*-
+
+@c Rel:v-0-9
+
+@c %**start of header
+@setfilename qa.info
+@settitle The QA Manual
+@setchapternewpage odd
+@paragraphindent 0
+@c %**end of header
+
+@include version.texi
+
+@ifinfo
+This file documents QA.
+
+Copyright (C) 1998-1999,2004-2005 Thien-Thi Nguyen
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Copying'' and ``GNU General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+
+@end ifinfo
+
+@c  This title page illustrates only one of the
+@c  two methods of forming a title page.
+
+@titlepage
+@title The QA Manual
+@author by Thien-Thi Nguyen
+
+@c  The following two commands
+@c  start the copyright page.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1998-1999,2004-2005 Thien-Thi Nguyen
+
+Published by Thien-Thi Nguyen
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Copying'' and ``GNU General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+
+@end titlepage
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@c this is the Top node!
+
+@ifnottex
+@node Top
+@top The QA Manual
+
+Welcome to The QA Manual,
+compiled @value{YYYYMMDD},
+for distribution with QA @value{VERSION}.
+
+QA is a system that helps the developer manage specification files, test
+cases, test run results, and test run reports (html output).  Hopefully,
+by making QA easy to understand and handle, more people will do it!
+
+@end ifnottex
+
+@menu
+* Copying::                     Know your rights
+* Overview::                    This framework in a bigger framework
+* Beginning a QA Session::      Includes other session management info
+* Editing Test Cases::          How to manipulate the test case database
+* Starting a Test Run::         Efficient note taking
+* Resuming a Test Run::         Handling interruption gracefully
+* Submitting Bug Reports::      Interfacing with bug-tracking systems
+* Customization::               Tweaking and extension
+* Internals::                   Notes for the developer
+
+* Function Index::              Various ways to find things
+* Variable Index::
+* Concept Index::
+@end menu
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Copying
+@chapter Copying
+
+This program and the accompanying documentation is released under the
+GNU General Public License, version 2.  See file COPYING in the
+distribution for a copy of this license.  In Emacs, you can type
+@code{C-h C-c}.
+
+The QA home page is
+@url{http://www.glug.org/people/ttn/software/qa/}.
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Overview
+@chapter Overview
+
+@quotation
+And what is good, Phædrus,
+And what is not good...
+Need we ask anyone to tell us these things?
+
+    ---Robert M. Pirsig, @emph{Zen and the Art of Motorcycle Maintenance}
+@end quotation
+
+In the pursuit of quality, one can go insane not knowing where the
+boundaries of the problem lie.  If we are to assure quality, we need to
+make a choice as to how to approach the question, and perhaps even more
+importantly, figure out: what is the question?  Ultimately, we find that
+how we ask the question is a large part of the answer.
+
+@menu
+* QA Methodology::
+* QA Definitions::
+@end menu
+
+@c ---------------------------------------------------------------------------
+@node    QA Methodology
+@section QA Methodology
+@cindex  QA Methodology
+
+This section describes the QA methodology upon which QA is built.
+
+@subsection General Approach
+
+The QA process is intertwined with that of product development, although
+the bulk of the work is visible only after a @dfn{drop}.  Before the
+drop, however QA is involved with the following areas:
+
+@itemize @bullet
+@item feature documentation
+@item component documentation
+@item testability input
+@end itemize
+
+The documentation aspects of QA arise because at the heart of QA's
+methods is a comparison between what is "right" and what is "actual".
+Defining what is correct is the responsibility of everyone on the team
+(both development and QA), but it falls on QA's shoulders the burden of
+documenting the product, both at the feature (user, black-box) level and
+at the component (white-box) level, because such @dfn{specification}
+directly leads to the production of @dfn{test cases}.
+
+After the drop, QA does @dfn{test runs} to determine the build
+@dfn{confidence level} and publishes the result when done.  This
+includes the build label, the overall confidence level, and a breakdown
+of what tests passed and what failed.
+
+When bugs are found they are entered into the bug-tracking system, and
+new bugs are also converted into test cases for regression testing.
+
+The actual front end used to administer test cases and test runs is
+@uref{http://www.glug.org/people/ttn/software/qa/, QA}, the subject of the
+following chapters in this manual.
+
+@subsection Test Case Approach
+
+For @dfn{black box} test cases, there are basically three areas
+covered:
+
+@itemize @bullet
+@item look and feel / style
+@item grammar / spelling / connectivity
+@item functionality
+@end itemize
+
+The first area must be done manually, and can be done by anyone, not
+just QA.  The test cases here are mostly the result of issues raised
+over time, rather than prepared beforehand.
+
+The second area is amenable to automatic tools, such as a dead-link
+checker.  The test cases will be to run the tool over the build
+expecting zero errors and only a reasonably small number of
+warnings.
+
+The third area must be done manually.  High-level specification is used
+to formulate the test cases.
+
+For @dfn{white box} test cases, the component specification is used to
+formulate the test cases.  There is a test harness usually written in
+the language of the software implementation that facilitates the test
+run process.  Test cases include code that fits within this harness.
+
+@subsection Automation
+@cindex  Automation
+
+A particular test case can be automated by attaching to it the
+@code{automatic} property.  In this case, the action to be performed
+should be a single Emacs lisp form that properly drives the (possibly
+external) test harness.  The form is eval'ed with the default directory
+set to that of the test case database.  The result should be a string
+that can be compared with the @code{expected-result}.
+
+@c ---------------------------------------------------------------------------
+@node    QA Definitions
+@section QA Definitions
+@cindex  QA Definitions
+
+It's good to agree on what we're talking about.
+
+@menu
+* specification::
+* test case::
+* scope::
+* test run::
+* drop::
+* confidence level::
+@end menu
+
+@c ---------------------------------------------------------------------------
+@node       specification
+@subsection specification
+@cindex     specification
+
+The specification is some written, version-controlled document
+describing the product at various levels of abstraction.  It includes a
+feature list targeted at the end user and also lower-level descriptions
+of the product components, their interfaces, and their behavior.
+Although too much detail is discouraged (a pain to write, and hard to
+maintain), enough information must be available for QA to produce at
+least one @emph{test case} per feature or component.
+
+In the absence of a proper engineering specification, a marketing spec
+(just the feature list) should be used as the basis for fleshing out a
+full spec.  In no cases should QA write a test case without referencing
+some part of this spec.
+
+@c ---------------------------------------------------------------------------
+@node       test case
+@subsection test case
+@cindex     test case
+
+The test case is a description of how to go about doing a @emph{test run}
+(see below).  It must include the following information:
+
+@itemize @bullet
+@item identification number
+@item specification reference
+@item chaining test case (if applicable)
+@item product
+@item test platform
+@item scope
+@item action
+@item expected result
+@end itemize
+
+The main parts of the test case are the @emph{action} and the
+@emph{expected result}, both of which should be as specific as possible.
+Avoid ranges of behaviors, using instead simple directives and
+descriptions.  For example, the action "type in host name" is still
+considerably vague; the host name might be a single word, or a
+partially-qualified name, or a fully-qualified name.  Furthermore,
+should the host be a valid host or should it a new name?  In this case,
+we would want something along the lines of "type in FQDN of existing
+host and press Enter".
+
+Similarly, the expected result should be as specific as possible within
+the defined scope of the test (see below).
+
+The @emph{test platform} includes information such as browser, OS, and
+associated version numbers.
+
+The @emph{specification reference} is section or paragraph number in the
+specification (see above) that this test case is attempting to cover.
+This field should @emph{never} be blank.
+
+@c ---------------------------------------------------------------------------
+@node       scope
+@subsection scope
+@cindex     scope
+
+The scope of the test is colloquially divided into "black box" and
+"white box".  These indicate the rough division between end user and
+programmer points of views.
+
+@itemize @bullet
+
+@item black box
+
+Black box testing is to ensure that the end user experience is, in order
+of priority:
+
+@itemize @bullet
+@item consistent
+@item predictable
+@item functional
+@end itemize
+
+The functional aspect is important but note that it is listed last.
+From the user's perspective, consistency and predictability are
+stressed, following from the principle of least-surprise.
+
+From the end user's point of view, functionality is definable by the
+product and so this area of testing looks at the connection between what
+the product says it will do and what it actually does.  Thus, we
+consider high-level explanation (i.e., narrative) to be in the scope of
+black box testing.
+
+@item white box
+
+White box testing is any testing that does not directly address the end
+user experience, and often makes use of methodologies that are
+unavailable to the end user.  Here, the primary goal is to ensure proper
+functionality of the product as given in the spec (see above).
+
+White box testing involves testing the components that make up the
+product, using an environment that has visibility into the component
+interfaces.
+
+@end itemize
+
+The scope of a test case need not be limited by "black box" and "white
+box".  Especially for white box testing, it is more useful to consider
+the functional areas that are being tested, for example "database
+interface" or "session management".
+
+@c ---------------------------------------------------------------------------
+@node       test run
+@subsection test run
+@cindex     test run
+
+A test run is the application of a test case to a product instance.
+Thus, a test run includes the following information:
+
+@itemize @bullet
+@item timestamp
+@item test case id
+@item product build id (number or date)
+@item actual result of test
+@item status
+@end itemize
+
+The @emph{timestamp} and @emph{test case id} together uniquely identify
+a test run.  Similarly, the @emph{product build id} uniquely identifies
+an instance of the product, i.e., a particular build that is being
+tested.  These forms of identification are important in order to avoid
+duplication in testing.
+
+The @emph{actual result} of the test follows the form of the expected
+result (which is influenced by the scope of the test).  As the field
+name implies, the contents are based on fact and thus should be stated
+in the past tense.  For example, if the expected result is "widget
+changes color to green", and such behavior was indeed observed, the
+actual result would be "widget changed color to green".  Although these
+grammar rules may seem nit-picky, they do serve to emphasize that actual
+results means empirical observation.
+
+Finally, the @emph{status} is one of "pass", "fail" or "inconclusive".
+
+@c ---------------------------------------------------------------------------
+@node       drop
+@subsection drop
+@cindex     drop
+
+This term is used when the development team hands to the QA team a
+product build deemed featureful and stable enough for testing using QA
+methods (as opposed to any pre-integration testing that developers may
+do themselves).  The build must be tagged with a unique label (perhaps
+an increasing integer or dotted-integer, or the date) before drop.  It
+may be necessary to include in the drop development tools that are
+changing over time, as well, to ensure reproducibility in the build.
+These tools should be labeled with the same name.
+
+The mechanics of a drop are simple: take a snapshot of the build, label
+it, and place it somewhere where QA can wrap black-box or white-box
+environments around it.  Ideally, the drop is relocatable by QA,
+although sometimes this may not be possible.
+
+@c ---------------------------------------------------------------------------
+@node       confidence level
+@subsection confidence level
+@cindex     confidence level
+
+The confidence level describes the overall result of all the test runs.
+Many complicated formulas are possible, but for now we use:
+
+@code{confidence_level = percent_tests_possible * percent_tests_passed}
+
+This formula takes into account both QA and developer responsibilities.
+Because the right-hand-side elements are percentages, the result is also
+expressed as a percentage or as a decimal number between 0.0 and 1.0.
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Beginning a QA Session
+@chapter Beginning a QA Session
+
+Interaction with QA is based on a session concept.  In some ways, this
+is like "logging in" in that it establishes context for subsequent
+actions.  To begin a session, use @kbd{M-x qa-begin-session}.  Likewise,
+when you are finished, use @kbd{M-x qa-finish-session}.
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} qa-begin-session spec-file
+Find @var{spec-file} and synchronize internal data structures.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} qa-finish-session
+Calls @code{qa-show-session} one last time and then resets all internal
+variables.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+As a convenience, there is a session log available that QA updates on
+certain occasions.  You are free to add notes and review the log at any
+time with the commands @code{qa-log} and @code{qa-show-session}.
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} qa-log msg &rest args
+Log timestamped @var{msg}, which may contain formatting sequences.
+@var{args} are used to consume formatting sequences.  (This uses
+@code{format}.)  When called interactively, @var{msg} must be a simple
+string (without formatting sequences).
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} qa-display-session-log
+Display the QA session log in a buffer called "*QA Session*".
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Editing Test Cases
+@chapter Editing Test Cases
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} qa-edit-tcdb
+Edit a test case database.
+
+This is basically a wrapper around @code{db-find-file}, part of EDB
+(the Emacs Database) written by Michael Ernst.
+
+Each test case entry is shown in the display buffer by itself.  Also, in
+another window, the text of each case's referenced spec-item is shown in
+a buffer named "*QA Spec Relevance Chain*", as well as parent nodes of
+the spec item, as far up the chain as possible.
+
+This is known as viewing mode, and @code{n} and @code{p} can be used to
+show the next and previous records, respectively.  @xref{Database View
+mode, , Database View mode, edb, The EDB Manual}, for details.  In
+addition to the many commands supplied by EDB, the following keys are
+bound:
+
+@table @kbd
+
+@item a
+tcdb-add-case (This binding supersedes the command
+@code{db-add-record} normally bound to @code{a} by EDB.)
+
+@item d
+tcdb-delete-case (This binding supersedes the command
+@code{db-delete-record} normally bound to @code{d} by EDB.)
+
+@item ;
+tcdb-toggle-automatic
+
+@item C-l
+tcdb-force-redisplay
+
+@item j
+tcdb-jump (This binding supersedes the command @code{db-jump-to-record}
+normally bound to @code{j} by EDB.)
+
+@item M-o
+tcdb-other
+
+@item q
+tcdb-exit (This binding supersedes the command @code{db-quit} normally
+bound to @code{q} by EDB.)
+
+@item x
+tcdb-exit (This binding supersedes the command @code{db-exit} normally
+bound to @code{x} by EDB.)
+
+@end table
+
+To edit the current record, type @code{TAB} to go into editing mode (and
+to move from field to field).  In editing mode, you can use normal Emacs
+commands to move about, and to insert or delete text within the input
+areas.  Note that the spec-item reference and sequence number fields are
+not editable.
+
+When done editing, type @code{C-c C-c} to resume the viewing mode.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-add-case
+This command adds a test case to the database.
+
+The spec-item reference is taken from the current test case, and the
+sequence number is determined by adding 1 to the largest sequence number
+for the current spec-item.  A new test test is created, with the action
+and expected-result fields cleared, ready for input.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-delete-case
+Currently, this command prints a warning message only.
+If you really want to delete a test case, use @code{M-x
+db-delete-record}.  [TODO: Figure out synch schema.]
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-toggle-automatic
+Toggle the @code{automatic} property of a test case.  If the test case
+has no text in its @code{action} field, this command (when toggling to
+@code{t}) also sets up a LISP comment and an empty call to
+@code{qatr-run}.  @xref{QA Methodology, Automation}.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-force-redisplay
+This command redisplays the current test case, including the spec-item
+text from the spec buffer.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-jump
+This command asks you for a spec item reference and then jumps to the
+test case that uses that reference.  When jumping, the index of the test
+case you left is saved.  This is useful for @code{tcdb-other}.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-other
+Jump back to the the previous test case where you jumped from.  This
+repeated invocations of this command bounce back and forth between two
+test cases.  This can be useful when the test cases are similar, or
+refer to each other in some way.
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@deffn {Command} tcdb-exit
+Offer to save the database if needed, then quit.  This command also
+deletes the relevance chain buffer (and window).
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Starting a Test Run
+@chapter Starting a Test Run
+
+All the preparation of the spec file and test cases is for the sole
+purpose of doing a @dfn{test run}.  A build is specified and then each
+test case is applied to the build.  The actual application can be manual
+(done by a human being) or automatic (done by a script).  This is all
+specified on a per-test-case basis.
+
+Aside from the application of the test case to the build, the rest of
+the test run is basically an exercise in accounting.  This is where
+QA comes in -- to help you keep track of the test run results in as
+painless a way as possible.
+
+To start a test run, use @code{qa-run-tests}.
+
+@deffn {Command} qa-run-tests
+For each test case, prompt for application and record the results.
+
+If a test case is has the @code{automatic} property, its action is
+evaluated by Emacs.  @xref{QA Methodology, Automation}, for more info.
+Otherwise, Emacs will present the required action in a buffer named by
+combining "*Test Run*" with the product name and test case identifier.
+In this buffer, there is a place to record the actual result.  After
+typing in the result, type @code{[f11]} to commit.
+
+Sometimes the actual result matches the expected result but you don't
+want to type in the whole string (which can be error-prone, as well).
+In this case, use @code{[f10]} to have Emacs do that for you.
+
+You may also skip the test case by typing @code{[f12]}.  There is no way
+to go backwards.
+
+@c If skipped, the status of the test run for this test
+@c case is recorded as @code{inconclusive}.
+
+After all the results are recorded, the test run is scored as an
+aggregate.
+
+@c Otherwise, the status is recorded as @code{failed}, and Emacs asks if
+@c you wish to submit the failure to the bug-tracking system now or later.
+@c Answering "now" starts the bug reporting process (@pxref{Submitting Bug
+@c Reports}), which, when complete, resumes with the next test case in the
+@c test run.  Answering "later" postpones the bug reporting process until
+@c after the test run.
+
+[There will be hooks for bug reporting in a future version...]
+@end deffn
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Resuming a Test Run
+@chapter Resuming a Test Run
+
+[Interruptible test runs are not supported.]
+
+@c In the middle of a a test run, you can use @code{qa-so-far-so-good} to
+@c save the status of your current run, or @code{qa-give-up} if the product
+@c looks too broken for further contemplation.  If you save status, you can
+@c resume later with @code{qa-resume-test-run}.
+@c
+@c @deffn {Command} qa-so-far-so-good file
+@c Checkpoint the current test run in @var{file}.
+@c In the "*Test Run*" buffer, this is bound to @code{C-c C-s}.
+@c @end deffn
+@c
+@c @deffn {Command} qa-give-up
+@c Abort the current test run.
+@c In the *Test Run* buffer, this is bound to @code{C-c C-q}.
+@c @end deffn
+@c
+@c @deffn {Command} qa-resume-test-run file
+@c Read in test run state from @var{file} and resume from there.
+@c @end deffn
+@c
+@c Because the test is run from an Emacs buffer, you are free to switch
+@c buffers and do other editing.  However, you should not modify either the
+@c test case database or the spec file if you want to continue the test
+@c run; to avoid confusing and possibly dangerous inconsistencies, if QA
+@c detects changes in these data structures, it will do a @code{qa-give-up}
+@c for you.
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Submitting Bug Reports
+@chapter Submitting Bug Reports
+
+[TODO]
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Customization
+@chapter Customization
+
+[TODO]
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node    Internals
+@chapter Internals
+
+Here is documentation for internal concepts, variables and functions.
+You should not rely on these to be stable in their name or methods.
+They are included for completeness (and to help the developers keep
+track of things).
+
+@c ---------------------------------------------------------------------------
+@defvar qa-session
+Non-nil if in the midst of a QA session.
+Has useful properties hanging off of it.
+
+@table @code
+
+@item spec-buffer
+The buffer that holds the QA spec file.
+
+@item spec-item-regexp
+Regexp used when snarfing spec items.  The first submatch (\1) is
+dotted-integer that uniquely identifies the spec item.
+
+@item spec-items
+Buffer local alist of elements with form
+
+        (dotted-num dnum-beg dnum-end descrip-beg descrip-end)
+
+@code{dotted-num} is the key.  The -beg and -end elements are buffer
+positions resulting from a parse of the spec file.
+
+@item open-files
+Files opened that are needed by the current QA session.
+
+@item files
+An alist of file types and last used instance.  Currently, this includes
+@code{spec}, @code{tcdb}, @code{trun} and @code{html}.  These are set by
+@code{qa-read-file-name}.
+
+@item score
+The score vector consisting of the form
+
+        [number-ran number-passed run-array pass-array]
+
+This is also saved as a database-local variable in the test run file.
+WARNING: This will change in the future!
+
+@item orig-database-view-mode-map
+@code{qa-begin-session} saves @code{database-view-mode-map} to this and
+@code{qa-finish-session} restores it.
+
+@end table
+@end defvar
+
+@c ---------------------------------------------------------------------------
+@defun  qa-get prop
+@defunx qa-put prop val
+These wrap @code{get} and @code{put} of @code{qa-session} properties.
+@var{prop} and @var{val} are treated as usual.
+@end defun
+
+@c ---------------------------------------------------------------------------
+@defmac while-qa-session
+A macro to enforce qa-session relevance.
+@end defmac
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node Function Index
+@unnumbered Function Index
+@printindex fn
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node Variable Index
+@unnumbered Variable Index
+@printindex vr
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@node Concept Index
+@unnumbered Concept Index
+@printindex cp
+
+@c ---------------------------------------------------------------------------
+@c ---------------------------------------------------------------------------
+@summarycontents
+@contents
+@bye
+
+@c Local variables:
+@c fill-column: 72
+@c End:
+
+@c qa.texi ends here

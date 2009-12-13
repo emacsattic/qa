@@ -1,0 +1,250 @@
+;; Database file written by EDB; format 0.6@ "%s" -*-emacs-lisp-*- @
+
+;; Copyright (C) 1998-1999,2005 Thien-Thi Nguyen
+;; This file is part of QA.  QA comes with ABSOLUTELY NO WARRANTY.
+;; QA is released under GNU GPL; see the file COPYING for details.
+
+[cl-struct-database
+
+ "Test Cases for @"%s" (buffer-file-name (qa-get 'spec-buffer))@"
+ ;; `print-name'
+ ;;      A string which briefly describes the database.  It appears, among
+ ;;      other places, in prompts for questions regarding the database.  It
+ ;;      defaults to "Unnamed database N", where the positive integers are
+ ;;      assigned to N in order.
+
+ nil
+ ;; `first-link'
+ ;;      The first link in the database.  The links are arranged as a
+ ;;      doubly-linked circular list, and each link contains a record, among
+ ;;      other information.  *Note The link structure::.
+
+ 1
+ ;; `no-of-records'
+ ;;      An integer, the number of records (and links) in the database.
+ ;;      The first link is numbered 1 and the last link is numbered
+ ;;      `no-of-records'.
+
+ @"%S" (buffer-file-name)@
+ ;; `file'
+ ;;      A string, the name of the file from which this database was read.
+
+ nil
+ ;; `file-local-variables'
+ ;;      A string, the text of the "Local Variables" section of the file
+ ;;      from which this database was read, if any.
+
+ nil
+ ;; `aux-file'
+ ;;      A string, the name of this database's auxiliary file.  If it is
+ ;;      `nil', then a number of default filenames are tried, based on
+ ;;      `db-aux-file-suffixes' (*note Auxiliary files::.).
+
+ nil
+ ;; `data-display-buffers'
+ ;;      A list of data display buffers which are displaying this database.
+ ;;      Since every summary buffer is associated with (and subordinate to)
+ ;;      a data display buffer, summary buffers are not listed in the
+ ;;      database structure.
+
+ nil
+ ;; `default-format-file'
+ ;;      A string, the name of the default format file for this database.
+ ;;      If it is `nil', then a number of default filenames are tried by
+ ;;      function `db-file->format-file' (*note Auxiliary files::.).
+
+ nil
+ ;; `hide-functions'
+ ;;      This does not appear to be used at present.
+
+ 8
+ ;; `no-of-fields'
+ ;;      An integer, the number of fields in each record.
+
+ [spec-item-ref subseq-num action expected-result nr np actual-result props]
+ ;; `fieldnames'
+ ;;      A vector of symbols, the names of the record fields.  Function
+ ;;      `db-fname<-fno' (*note Accessing record fields::.) uses
+ ;;      this to determine the name of a field, given its index.
+ ;;
+ ;;      You may set this slot to be a list, and EDB will automatically
+ ;;      convert it to a vector, as well as setting other database slots
+ ;;      that can be determined from it.  (When doing so, use
+ ;;      `database-set-fieldnames-to-list', which can safely be placed in
+ ;;      any format file, instead of `database-set-fieldnames'; for details,
+ ;;      see *Note Changing display formats::.)  This information is
+ ;;      duplicated in the recordfieldspecs.
+
+ ((spec-item-ref . 0)
+  (subseq-num . 1)
+  (action . 2)
+  (expected-result . 3)
+  (nr . 4)
+  (np . 5)
+  (actual-result . 6)
+  (props . 7))
+ ;; `fieldname-alist'
+ ;;      An alist of fieldnames and indices.  Function
+ ;;      `fieldname->fieldnumber' (*note Accessing record fields::.) uses
+ ;;      this to determine the index of a field, given its name.
+
+ [intdotint integer string string integer integer string plist]
+ ;; `recordfieldspecs'
+ ;;      A vector of symbols or recordfieldspecs which specify the type of
+ ;;      each record field.  If the value is a symbol, it is the name of a
+ ;;      record field type name.  The name is converted to a
+ ;;      recordfieldspec.  To access or
+ ;;      change a particular recordfieldspec, use the following functions:
+ ;;
+ ;;     `database-recordfieldspec'
+ ;;           Return the recordfieldspec of DATABASE corresponding to
+ ;;           RECORD-INDEX.  Dereferences any symbol found in the
+ ;;           recordfieldspecs slot of DATABASE.
+ ;;
+ ;;     `database-recordfieldspec-type'
+ ;;           Return the type of the recordfieldspec of DATABASE
+ ;;           corresponding to RECORD-INDEX.
+ ;;
+ ;;     `database-set-recordfieldspec'
+ ;;           Set the recordfieldspec of DATABASE corresponding to
+ ;;           RECORD-INDEX to RS.  Use this to redefine, on a per-field
+ ;;           basis, subfields of the recordfieldspec.
+
+ (((0) (1) (2) (3) (4) (5) (6) (7)))
+ ;; `field-priorities'
+ ;;      Determines in which order fields are compared when sorting
+ ;;      records, and which fields are ignored entirely.
+ ;;
+ ;;      This slot's value is a cons of two lists:  the first list contains
+ ;;      fields that are used for sorting, and the second list is the
+ ;;      ignored fields.  Each list consists of pairs of fieldnumber and
+ ;;      order-info.  You may use `nil' for the second list when setting
+ ;;      this slot.  EDB always maintains the list of ignored fields,
+ ;;      however, as its order might be worthwhile--for instance, for
+ ;;      reminding the user of what the order used to be.
+ ;;
+ ;;      The order-info specifies how the field should be sorted:  in
+ ;;      increasing order, in decreasing order, or according to an
+ ;;      arbitrary function.  To choose the default ordering, or its
+ ;;      inverse, use the symbol `increasing' or `decreasing'.  Otherwise,
+ ;;      order-info is a cons of TYPE and VALUE, where TYPE is a symbol
+ ;;      (either `order-function' or `sort-function') and VALUE specifies
+ ;;      the function.
+ ;;
+ ;;      In the sorting section's example (*note Sorting::.), the record
+ ;;      fields were `firstname', `lastname', `address', `city', and `zip'.
+ ;;      Records were to be sorted on `lastname' in increasing order, or
+ ;;      on `firstname' in decreasing order if the `lastname' fields
+ ;;      matched, ignoring the other fields entirely for the purposes of
+ ;;      the sort.  The corresponding field priorities list would be
+ ;;
+ ;;           (((1 . increasing) (0 . decreasing)) .
+ ;;            ((2 . increasing) (3 . increasing) (4 . increasing)))
+
+ nil
+ ;; `hidden-to-end-p'
+ ;;      A boolean which determines whether, when sorting, hidden records
+ ;;      should be sorted in the usual way or placed at the end of the
+ ;;      sorted order.
+
+ t
+ ;; `internal-file-layout-p'
+ ;;      A boolean which determines whether the database is saved in
+ ;;      internal file layout.  This has no effect when the database is
+ ;;      read, but it is set at read time so that, by default, the database
+ ;;      is written out as it was read in.
+ ;;
+ ;;      Setting this slot, then saving the database to disk, is a good way
+ ;;      to convert the database to or from internal file layout.  It can
+ ;;      be set in the usual way, or interactively via use of the following
+ ;;      function:
+ ;;
+ ;;     `M-x db-toggle-internal-file-layout'
+ ;;           Toggle whether the database will be saved in EDB's internal
+ ;;           file layout.  With a nonzero prefix argument, set it to use
+ ;;           internal file layout.  With a zero prefix argument, set it
+ ;;           not to use internal file layout.
+
+ [cl-struct-sepinfo nil nil nil "\n" nil nil nil nil nil nil]
+ [cl-struct-sepinfo nil nil nil "\t" nil nil nil nil nil nil]
+ [cl-struct-sepinfo nil nil nil nil nil nil nil nil nil nil]
+ ;; `record-sepinfo'
+ ;; `field-sepinfo'
+ ;; `alternative-sepinfo'
+ ;;      These sepinfos are used when reading databases with delimited file
+ ;;      layouts.  A sepinfo contains a particular string, a regular
+ ;;      expression, or a function that specifies how pieces of information
+ ;;      are separated in the disk file (for more about the sepinfo
+ ;;      structure, *note How to specify delimited file layouts::.).  These
+ ;;      sepinfos describe how to separate records, fields within a record,
+ ;;      and alternatives within a field.  (The latter is not yet fully
+ ;;      implemented.)
+
+ nil
+ ;; `read-record-from-region'
+ ;;      `nil' or a function of no arguments which returns a record read
+ ;;      from the current region of the current buffer.  For details, *note
+ ;;      Nonregular file layout::..
+
+ nil
+ ;; `write-region-from-record'
+ ;;      `nil' or a function which takes a record as its argument and
+ ;;      inserts the file representation of that record in the current
+ ;;      buffer.  For details, *note Nonregular file layout::..
+
+ "\t"
+ "\n"
+ ;; `sub-fieldsep-string'
+ ;; `sub-recordsep-string'
+ ;;      When delimiter substitution is required in reading a database,
+ ;;      these strings are temporarily used to delimit fields and records,
+ ;;      respectively.  (These strings replace the actual field and/or
+ ;;      record separators before substitution occurs.)  Their values are
+ ;;      chosen automatically if these slots aren't set.
+
+ nil
+ ;; `substitutions'
+ ;;      An alist of actual and stored strings which permits translations
+ ;;      from how the data appears in the data file to how it should really
+ ;;      look; for instance, in data files with the tab-separated text
+ ;;      layout, fields may not contain newlines, so any newlines in the
+ ;;      data can be converted to some other character (such as `^K') when
+ ;;      the database is written and then converted back when it is read in
+ ;;      again.  For more about substitution in reading databases, *note
+ ;;      Delimited file layout::..
+
+ nil
+ ;; `modified-p'
+ ;;      Non-`nil' if this database has been modified since it was last read
+ ;;      or written.
+
+ t
+ ;; `modifiable-p'
+ ;;      Non-`nil' if this database may be modified.  It is set to `nil' if
+ ;;      the database file is not writable, and occasionally for other
+ ;;      reasons.  This does not prevent you from entering Database Edit
+ ;;      mode, only from making changes while in Database Edit mode.
+ ;;
+ ;;      The slot may be set directly.  The following function, which is
+ ;;      bound in Database View, Database Edit, and Database Summary modes,
+ ;;      permits the slot to be changed interactively.
+ ;;
+ ;;     `C-x C-q'
+ ;;           Toggle whether the database may be modified by the user
+ ;;           (`db-toggle-modifiable-p').  With a nonzero prefix argument,
+ ;;           set it modifiable.  With a zero prefix argument, set it
+ ;;           non-modifiable.
+
+ nil
+ ;; `locals'
+ ;;      An association list of symbols and values for per-database
+ ;;      variables.  (For the number of local variables I expect databases
+ ;;      to have, an alist is faster than a hashtable, and it's easier to
+ ;;      save to disk besides.)  Such variables should be created with
+ ;;      `database-make-local', set using `database-set-local' (note the
+ ;;      singular form) and dereferenced with `database-get-local'; for
+ ;;      more information about these functions, see *Note Local
+ ;;      variables::.
+ ]
+
+@ "%S" fresh-data @			; yummy!

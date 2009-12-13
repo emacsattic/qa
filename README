@@ -1,0 +1,42 @@
+This directory contains QA, some elisp and other files to ease QA tasks.
+QA is released under the terms of the GNU General Public License.
+
+QA requires EDB to be installed.  It has been tested w/ EDB 1.25.
+
+	http://www.glug.org/people/ttn/software/edb/
+
+------------------------------------------------------------------------------
+To install, follow these steps:
+
+(1) Unpack the distribution.
+
+	gzip -dc qa-X.Y.tar.gz | tar xf -
+
+(2) Configure for your system.
+
+	cd qa-X.Y
+	./configure	# default prefix is /usr/local
+
+(3) Build the package.
+
+	make
+
+(4) Install.  This process copies qa.el to `lispdir', which is normally
+    something like /usr/local/share/emacs/site-lisp.
+
+	make install
+
+    Additionally, these files are copied to these directories:
+
+	file		directory
+	----------	---------------
+	data files	PREFIX/share/qa
+	qa.info		PREFIX/info
+	qa.html		PREFIX/share/qa
+
+    To install qa.el in a different place, use `lispdir=DIR', like so:
+
+	make install lispdir=/home/ttn/elisp
+
+------------------------------------------------------------------------------
+Address correspondance to Thien-Thi Nguyen <ttn@glug.org>.

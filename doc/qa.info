@@ -1,0 +1,705 @@
+This is qa.info, produced by makeinfo version 4.6 from qa.texi.
+
+This file documents QA.
+
+Copyright (C) 1998-1999,2004-2005 Thien-Thi Nguyen
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled "Copying" and "GNU General Public License" are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+
+
+File: qa.info,  Node: Top,  Next: Copying,  Up: (dir)
+
+The QA Manual
+*************
+
+Welcome to The QA Manual, compiled 2005-10-03, for distribution with QA
+0.9.
+
+QA is a system that helps the developer manage specification files, test
+cases, test run results, and test run reports (html output).  Hopefully,
+by making QA easy to understand and handle, more people will do it!
+
+* Menu:
+
+* Copying::                     Know your rights
+* Overview::                    This framework in a bigger framework
+* Beginning a QA Session::      Includes other session management info
+* Editing Test Cases::          How to manipulate the test case database
+* Starting a Test Run::         Efficient note taking
+* Resuming a Test Run::         Handling interruption gracefully
+* Submitting Bug Reports::      Interfacing with bug-tracking systems
+* Customization::               Tweaking and extension
+* Internals::                   Notes for the developer
+
+* Function Index::              Various ways to find things
+* Variable Index::
+* Concept Index::
+
+
+File: qa.info,  Node: Copying,  Next: Overview,  Prev: Top,  Up: Top
+
+Copying
+*******
+
+This program and the accompanying documentation is released under the
+GNU General Public License, version 2.  See file COPYING in the
+distribution for a copy of this license.  In Emacs, you can type `C-h
+C-c'.
+
+The QA home page is <http://www.glug.org/people/ttn/software/qa/>.
+
+
+File: qa.info,  Node: Overview,  Next: Beginning a QA Session,  Prev: Copying,  Up: Top
+
+Overview
+********
+
+     And what is good, Phædrus, And what is not good...  Need we ask
+     anyone to tell us these things?
+
+     --Robert M. Pirsig, _Zen and the Art of Motorcycle Maintenance_
+
+In the pursuit of quality, one can go insane not knowing where the
+boundaries of the problem lie.  If we are to assure quality, we need to
+make a choice as to how to approach the question, and perhaps even more
+importantly, figure out: what is the question?  Ultimately, we find that
+how we ask the question is a large part of the answer.
+
+* Menu:
+
+* QA Methodology::
+* QA Definitions::
+
+
+File: qa.info,  Node: QA Methodology,  Next: QA Definitions,  Up: Overview
+
+QA Methodology
+==============
+
+This section describes the QA methodology upon which QA is built.
+
+General Approach
+----------------
+
+The QA process is intertwined with that of product development, although
+the bulk of the work is visible only after a "drop".  Before the drop,
+however QA is involved with the following areas:
+
+   * feature documentation
+
+   * component documentation
+
+   * testability input
+
+The documentation aspects of QA arise because at the heart of QA's
+methods is a comparison between what is "right" and what is "actual".
+Defining what is correct is the responsibility of everyone on the team
+(both development and QA), but it falls on QA's shoulders the burden of
+documenting the product, both at the feature (user, black-box) level and
+at the component (white-box) level, because such "specification"
+directly leads to the production of "test cases".
+
+After the drop, QA does "test runs" to determine the build "confidence
+level" and publishes the result when done.  This includes the build
+label, the overall confidence level, and a breakdown of what tests
+passed and what failed.
+
+When bugs are found they are entered into the bug-tracking system, and
+new bugs are also converted into test cases for regression testing.
+
+The actual front end used to administer test cases and test runs is QA
+(http://www.glug.org/people/ttn/software/qa/), the subject of the
+following chapters in this manual.
+
+Test Case Approach
+------------------
+
+For "black box" test cases, there are basically three areas covered:
+
+   * look and feel / style
+
+   * grammar / spelling / connectivity
+
+   * functionality
+
+The first area must be done manually, and can be done by anyone, not
+just QA.  The test cases here are mostly the result of issues raised
+over time, rather than prepared beforehand.
+
+The second area is amenable to automatic tools, such as a dead-link
+checker.  The test cases will be to run the tool over the build
+expecting zero errors and only a reasonably small number of warnings.
+
+The third area must be done manually.  High-level specification is used
+to formulate the test cases.
+
+For "white box" test cases, the component specification is used to
+formulate the test cases.  There is a test harness usually written in
+the language of the software implementation that facilitates the test
+run process.  Test cases include code that fits within this harness.
+
+Automation
+----------
+
+A particular test case can be automated by attaching to it the
+`automatic' property.  In this case, the action to be performed should
+be a single Emacs lisp form that properly drives the (possibly
+external) test harness.  The form is eval'ed with the default directory
+set to that of the test case database.  The result should be a string
+that can be compared with the `expected-result'.
+
+
+File: qa.info,  Node: QA Definitions,  Prev: QA Methodology,  Up: Overview
+
+QA Definitions
+==============
+
+It's good to agree on what we're talking about.
+
+* Menu:
+
+* specification::
+* test case::
+* scope::
+* test run::
+* drop::
+* confidence level::
+
+
+File: qa.info,  Node: specification,  Next: test case,  Up: QA Definitions
+
+specification
+-------------
+
+The specification is some written, version-controlled document
+describing the product at various levels of abstraction.  It includes a
+feature list targeted at the end user and also lower-level descriptions
+of the product components, their interfaces, and their behavior.
+Although too much detail is discouraged (a pain to write, and hard to
+maintain), enough information must be available for QA to produce at
+least one _test case_ per feature or component.
+
+In the absence of a proper engineering specification, a marketing spec
+(just the feature list) should be used as the basis for fleshing out a
+full spec.  In no cases should QA write a test case without referencing
+some part of this spec.
+
+
+File: qa.info,  Node: test case,  Next: scope,  Prev: specification,  Up: QA Definitions
+
+test case
+---------
+
+The test case is a description of how to go about doing a _test run_
+(see below).  It must include the following information:
+
+   * identification number
+
+   * specification reference
+
+   * chaining test case (if applicable)
+
+   * product
+
+   * test platform
+
+   * scope
+
+   * action
+
+   * expected result
+
+The main parts of the test case are the _action_ and the _expected
+result_, both of which should be as specific as possible.  Avoid ranges
+of behaviors, using instead simple directives and descriptions.  For
+example, the action "type in host name" is still considerably vague;
+the host name might be a single word, or a partially-qualified name, or
+a fully-qualified name.  Furthermore, should the host be a valid host
+or should it a new name?  In this case, we would want something along
+the lines of "type in FQDN of existing host and press Enter".
+
+Similarly, the expected result should be as specific as possible within
+the defined scope of the test (see below).
+
+The _test platform_ includes information such as browser, OS, and
+associated version numbers.
+
+The _specification reference_ is section or paragraph number in the
+specification (see above) that this test case is attempting to cover.
+This field should _never_ be blank.
+
+
+File: qa.info,  Node: scope,  Next: test run,  Prev: test case,  Up: QA Definitions
+
+scope
+-----
+
+The scope of the test is colloquially divided into "black box" and
+"white box".  These indicate the rough division between end user and
+programmer points of views.
+
+   * black box
+
+     Black box testing is to ensure that the end user experience is, in
+     order of priority:
+
+        * consistent
+
+        * predictable
+
+        * functional
+
+     The functional aspect is important but note that it is listed last.
+     From the user's perspective, consistency and predictability are
+     stressed, following from the principle of least-surprise.
+
+     From the end user's point of view, functionality is definable by
+     the product and so this area of testing looks at the connection
+     between what the product says it will do and what it actually
+     does.  Thus, we consider high-level explanation (i.e., narrative)
+     to be in the scope of black box testing.
+
+   * white box
+
+     White box testing is any testing that does not directly address
+     the end user experience, and often makes use of methodologies that
+     are unavailable to the end user.  Here, the primary goal is to
+     ensure proper functionality of the product as given in the spec
+     (see above).
+
+     White box testing involves testing the components that make up the
+     product, using an environment that has visibility into the
+     component interfaces.
+
+
+The scope of a test case need not be limited by "black box" and "white
+box".  Especially for white box testing, it is more useful to consider
+the functional areas that are being tested, for example "database
+interface" or "session management".
+
+
+File: qa.info,  Node: test run,  Next: drop,  Prev: scope,  Up: QA Definitions
+
+test run
+--------
+
+A test run is the application of a test case to a product instance.
+Thus, a test run includes the following information:
+
+   * timestamp
+
+   * test case id
+
+   * product build id (number or date)
+
+   * actual result of test
+
+   * status
+
+The _timestamp_ and _test case id_ together uniquely identify a test
+run.  Similarly, the _product build id_ uniquely identifies an instance
+of the product, i.e., a particular build that is being tested.  These
+forms of identification are important in order to avoid duplication in
+testing.
+
+The _actual result_ of the test follows the form of the expected result
+(which is influenced by the scope of the test).  As the field name
+implies, the contents are based on fact and thus should be stated in
+the past tense.  For example, if the expected result is "widget changes
+color to green", and such behavior was indeed observed, the actual
+result would be "widget changed color to green".  Although these
+grammar rules may seem nit-picky, they do serve to emphasize that actual
+results means empirical observation.
+
+Finally, the _status_ is one of "pass", "fail" or "inconclusive".
+
+
+File: qa.info,  Node: drop,  Next: confidence level,  Prev: test run,  Up: QA Definitions
+
+drop
+----
+
+This term is used when the development team hands to the QA team a
+product build deemed featureful and stable enough for testing using QA
+methods (as opposed to any pre-integration testing that developers may
+do themselves).  The build must be tagged with a unique label (perhaps
+an increasing integer or dotted-integer, or the date) before drop.  It
+may be necessary to include in the drop development tools that are
+changing over time, as well, to ensure reproducibility in the build.
+These tools should be labeled with the same name.
+
+The mechanics of a drop are simple: take a snapshot of the build, label
+it, and place it somewhere where QA can wrap black-box or white-box
+environments around it.  Ideally, the drop is relocatable by QA,
+although sometimes this may not be possible.
+
+
+File: qa.info,  Node: confidence level,  Prev: drop,  Up: QA Definitions
+
+confidence level
+----------------
+
+The confidence level describes the overall result of all the test runs.
+Many complicated formulas are possible, but for now we use:
+
+`confidence_level = percent_tests_possible * percent_tests_passed'
+
+This formula takes into account both QA and developer responsibilities.
+Because the right-hand-side elements are percentages, the result is also
+expressed as a percentage or as a decimal number between 0.0 and 1.0.
+
+
+File: qa.info,  Node: Beginning a QA Session,  Next: Editing Test Cases,  Prev: Overview,  Up: Top
+
+Beginning a QA Session
+**********************
+
+Interaction with QA is based on a session concept.  In some ways, this
+is like "logging in" in that it establishes context for subsequent
+actions.  To begin a session, use `M-x qa-begin-session'.  Likewise,
+when you are finished, use `M-x qa-finish-session'.
+
+ - Command: qa-begin-session spec-file
+     Find SPEC-FILE and synchronize internal data structures.
+
+ - Command: qa-finish-session
+     Calls `qa-show-session' one last time and then resets all internal
+     variables.
+
+As a convenience, there is a session log available that QA updates on
+certain occasions.  You are free to add notes and review the log at any
+time with the commands `qa-log' and `qa-show-session'.
+
+ - Command: qa-log msg &rest args
+     Log timestamped MSG, which may contain formatting sequences.  ARGS
+     are used to consume formatting sequences.  (This uses `format'.)
+     When called interactively, MSG must be a simple string (without
+     formatting sequences).
+
+ - Command: qa-display-session-log
+     Display the QA session log in a buffer called "*QA Session*".
+
+
+File: qa.info,  Node: Editing Test Cases,  Next: Starting a Test Run,  Prev: Beginning a QA Session,  Up: Top
+
+Editing Test Cases
+******************
+
+ - Command: qa-edit-tcdb
+     Edit a test case database.
+
+     This is basically a wrapper around `db-find-file', part of EDB
+     (the Emacs Database) written by Michael Ernst.
+
+     Each test case entry is shown in the display buffer by itself.
+     Also, in another window, the text of each case's referenced
+     spec-item is shown in a buffer named "*QA Spec Relevance Chain*",
+     as well as parent nodes of the spec item, as far up the chain as
+     possible.
+
+     This is known as viewing mode, and `n' and `p' can be used to show
+     the next and previous records, respectively.  *Note Database View
+     mode: (edb)Database View mode, for details.  In addition to the
+     many commands supplied by EDB, the following keys are bound:
+
+    `a'
+          tcdb-add-case (This binding supersedes the command
+          `db-add-record' normally bound to `a' by EDB.)
+
+    `d'
+          tcdb-delete-case (This binding supersedes the command
+          `db-delete-record' normally bound to `d' by EDB.)
+
+    `;'
+          tcdb-toggle-automatic
+
+    `C-l'
+          tcdb-force-redisplay
+
+    `j'
+          tcdb-jump (This binding supersedes the command
+          `db-jump-to-record' normally bound to `j' by EDB.)
+
+    `M-o'
+          tcdb-other
+
+    `q'
+          tcdb-exit (This binding supersedes the command `db-quit'
+          normally bound to `q' by EDB.)
+
+    `x'
+          tcdb-exit (This binding supersedes the command `db-exit'
+          normally bound to `x' by EDB.)
+
+
+     To edit the current record, type `TAB' to go into editing mode (and
+     to move from field to field).  In editing mode, you can use normal
+     Emacs commands to move about, and to insert or delete text within
+     the input areas.  Note that the spec-item reference and sequence
+     number fields are not editable.
+
+     When done editing, type `C-c C-c' to resume the viewing mode.
+
+ - Command: tcdb-add-case
+     This command adds a test case to the database.
+
+     The spec-item reference is taken from the current test case, and
+     the sequence number is determined by adding 1 to the largest
+     sequence number for the current spec-item.  A new test test is
+     created, with the action and expected-result fields cleared, ready
+     for input.
+
+ - Command: tcdb-delete-case
+     Currently, this command prints a warning message only.  If you
+     really want to delete a test case, use `M-x db-delete-record'.
+     [TODO: Figure out synch schema.]
+
+ - Command: tcdb-toggle-automatic
+     Toggle the `automatic' property of a test case.  If the test case
+     has no text in its `action' field, this command (when toggling to
+     `t') also sets up a LISP comment and an empty call to `qatr-run'.
+     *Note Automation: QA Methodology.
+
+ - Command: tcdb-force-redisplay
+     This command redisplays the current test case, including the
+     spec-item text from the spec buffer.
+
+ - Command: tcdb-jump
+     This command asks you for a spec item reference and then jumps to
+     the test case that uses that reference.  When jumping, the index
+     of the test case you left is saved.  This is useful for
+     `tcdb-other'.
+
+ - Command: tcdb-other
+     Jump back to the the previous test case where you jumped from.
+     This repeated invocations of this command bounce back and forth
+     between two test cases.  This can be useful when the test cases
+     are similar, or refer to each other in some way.
+
+ - Command: tcdb-exit
+     Offer to save the database if needed, then quit.  This command also
+     deletes the relevance chain buffer (and window).
+
+
+File: qa.info,  Node: Starting a Test Run,  Next: Resuming a Test Run,  Prev: Editing Test Cases,  Up: Top
+
+Starting a Test Run
+*******************
+
+All the preparation of the spec file and test cases is for the sole
+purpose of doing a "test run".  A build is specified and then each test
+case is applied to the build.  The actual application can be manual
+(done by a human being) or automatic (done by a script).  This is all
+specified on a per-test-case basis.
+
+Aside from the application of the test case to the build, the rest of
+the test run is basically an exercise in accounting.  This is where QA
+comes in - to help you keep track of the test run results in as
+painless a way as possible.
+
+To start a test run, use `qa-run-tests'.
+
+ - Command: qa-run-tests
+     For each test case, prompt for application and record the results.
+
+     If a test case is has the `automatic' property, its action is
+     evaluated by Emacs.  *Note Automation: QA Methodology, for more
+     info.  Otherwise, Emacs will present the required action in a
+     buffer named by combining "*Test Run*" with the product name and
+     test case identifier.  In this buffer, there is a place to record
+     the actual result.  After typing in the result, type `[f11]' to
+     commit.
+
+     Sometimes the actual result matches the expected result but you
+     don't want to type in the whole string (which can be error-prone,
+     as well).  In this case, use `[f10]' to have Emacs do that for you.
+
+     You may also skip the test case by typing `[f12]'.  There is no way
+     to go backwards.
+
+     After all the results are recorded, the test run is scored as an
+     aggregate.
+
+     [There will be hooks for bug reporting in a future version...]
+
+
+File: qa.info,  Node: Resuming a Test Run,  Next: Submitting Bug Reports,  Prev: Starting a Test Run,  Up: Top
+
+Resuming a Test Run
+*******************
+
+[Interruptible test runs are not supported.]
+
+
+File: qa.info,  Node: Submitting Bug Reports,  Next: Customization,  Prev: Resuming a Test Run,  Up: Top
+
+Submitting Bug Reports
+**********************
+
+[TODO]
+
+
+File: qa.info,  Node: Customization,  Next: Internals,  Prev: Submitting Bug Reports,  Up: Top
+
+Customization
+*************
+
+[TODO]
+
+
+File: qa.info,  Node: Internals,  Next: Function Index,  Prev: Customization,  Up: Top
+
+Internals
+*********
+
+Here is documentation for internal concepts, variables and functions.
+You should not rely on these to be stable in their name or methods.
+They are included for completeness (and to help the developers keep
+track of things).
+
+ - Variable: qa-session
+     Non-nil if in the midst of a QA session.  Has useful properties
+     hanging off of it.
+
+    `spec-buffer'
+          The buffer that holds the QA spec file.
+
+    `spec-item-regexp'
+          Regexp used when snarfing spec items.  The first submatch
+          (\1) is dotted-integer that uniquely identifies the spec item.
+
+    `spec-items'
+          Buffer local alist of elements with form
+
+          (dotted-num dnum-beg dnum-end descrip-beg descrip-end)
+
+          `dotted-num' is the key.  The -beg and -end elements are
+          buffer positions resulting from a parse of the spec file.
+
+    `open-files'
+          Files opened that are needed by the current QA session.
+
+    `files'
+          An alist of file types and last used instance.  Currently,
+          this includes `spec', `tcdb', `trun' and `html'.  These are
+          set by `qa-read-file-name'.
+
+    `score'
+          The score vector consisting of the form
+
+          [number-ran number-passed run-array pass-array]
+
+          This is also saved as a database-local variable in the test
+          run file.  WARNING: This will change in the future!
+
+    `orig-database-view-mode-map'
+          `qa-begin-session' saves `database-view-mode-map' to this and
+          `qa-finish-session' restores it.
+
+
+ - Function: qa-get prop
+ - Function: qa-put prop val
+     These wrap `get' and `put' of `qa-session' properties.  PROP and
+     VAL are treated as usual.
+
+ - Macro: while-qa-session
+     A macro to enforce qa-session relevance.
+
+
+File: qa.info,  Node: Function Index,  Next: Variable Index,  Prev: Internals,  Up: Top
+
+Function Index
+**************
+
+* Menu:
+
+* qa-begin-session:                      Beginning a QA Session.
+* qa-display-session-log:                Beginning a QA Session.
+* qa-edit-tcdb:                          Editing Test Cases.
+* qa-finish-session:                     Beginning a QA Session.
+* qa-get:                                Internals.
+* qa-log:                                Beginning a QA Session.
+* qa-put:                                Internals.
+* qa-run-tests:                          Starting a Test Run.
+* tcdb-add-case:                         Editing Test Cases.
+* tcdb-delete-case:                      Editing Test Cases.
+* tcdb-exit:                             Editing Test Cases.
+* tcdb-force-redisplay:                  Editing Test Cases.
+* tcdb-jump:                             Editing Test Cases.
+* tcdb-other:                            Editing Test Cases.
+* tcdb-toggle-automatic:                 Editing Test Cases.
+* while-qa-session:                      Internals.
+
+
+File: qa.info,  Node: Variable Index,  Next: Concept Index,  Prev: Function Index,  Up: Top
+
+Variable Index
+**************
+
+* Menu:
+
+* qa-session:                            Internals.
+
+
+File: qa.info,  Node: Concept Index,  Prev: Variable Index,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* Automation:                            QA Methodology.
+* confidence level:                      confidence level.
+* drop:                                  drop.
+* QA Definitions:                        QA Definitions.
+* QA Methodology:                        QA Methodology.
+* scope:                                 scope.
+* specification:                         specification.
+* test case:                             test case.
+* test run:                              test run.
+
+
+
+Tag Table:
+Node: Top1203
+Node: Copying2252
+Node: Overview2620
+Node: QA Methodology3295
+Node: QA Definitions6169
+Node: specification6422
+Node: test case7228
+Node: scope8586
+Node: test run10284
+Node: drop11505
+Node: confidence level12398
+Node: Beginning a QA Session12926
+Node: Editing Test Cases14131
+Node: Starting a Test Run17843
+Node: Resuming a Test Run19576
+Node: Submitting Bug Reports19777
+Node: Customization19940
+Node: Internals20075
+Node: Function Index21944
+Node: Variable Index23042
+Node: Concept Index23230
+
+End Tag Table

@@ -1,0 +1,14 @@
+dnl Rel:v-0-9
+
+dnl Copyright (C) 1999,2004-2005 Thien-Thi Nguyen
+dnl This file is part of QA.  QA comes with ABSOLUTELY NO WARRANTY.
+dnl QA is released under GNU GPL; see the file COPYING for details.
+
+AC_INIT([QA], [0.9])
+
+AM_PATH_LISPDIR
+
+AC_CONFIG_FILES(GNUmakefile doc/GNUmakefile)
+AC_OUTPUT
+
+dnl configure.in ends here

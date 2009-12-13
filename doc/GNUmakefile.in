@@ -1,0 +1,33 @@
+# GNUmakefile
+# Rel:v-0-9
+
+# Copyright (C) 2005 Thien-Thi Nguyen
+# This file is part of QA.  QA comes with ABSOLUTELY NO WARRANTY.
+# QA is released under GNU GPL; see the file COPYING for details.
+
+VERSION = @PACKAGE_VERSION@
+
+ALLDOCS = qa
+
+all: docs
+doc: docs
+
+version.texi:
+	date +"@set YYYYMMDD %Y-%m-%d" > $@
+	echo @set VERSION $(VERSION) >> $@
+
+docs: version.texi all-info all-html
+
+all-info : $(addsuffix .info, $(ALLDOCS))
+all-html : $(addsuffix .html, $(ALLDOCS))
+
+%.info : %.texi
+	makeinfo $^
+
+%.html : %.texi
+	makeinfo --html --no-split $^
+
+clean:
+	$(RM) version.texi *.info *.html
+
+# GNUmakefile ends here
